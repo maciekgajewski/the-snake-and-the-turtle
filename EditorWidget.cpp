@@ -22,7 +22,7 @@
 #include "PythonHighlighter.hpp"
 
 #include <QPainter>
-#include <QtextBlock>
+#include <QTextBlock>
 
 #include <QDebug>
 
