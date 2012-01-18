@@ -34,13 +34,6 @@ static QStringList pythonKeywords(
 
 PythonHighlighter::PythonHighlighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent) {
-    /*
-    pythonKeywords << "and" << "assert" << "break" << "class" << "continue" << "def"
-                   << "del" << "elif" << "else" << "except" << "exec" << "finally"
-                   << "for" << "from" << "global" << "if" << "import" << "in"
-                   << "is" << "lambda" << "not" << "or" << "pass" << "print" << "raise"
-                   << "return" << "try" << "while" << "yield" << "True" << "False";
-                   */
 
     // formats
 
@@ -103,7 +96,6 @@ void PythonHighlighter::highlightBlock(const QString& text) {
         while (index >= 0)
         {
             int length = pattern.matchedLength();
-            qDebug() << "found" << pattern.pattern() << "in" << text << "length is" << length;
             setFormat(index, length, format);
             index = pattern.indexIn(text, index+length);
         }

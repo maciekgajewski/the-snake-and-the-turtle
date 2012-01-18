@@ -31,7 +31,6 @@ namespace Ui {
 namespace Turtle {
 
 class PythonBridge;
-class Turtle;
 
 class MainWindow : public QMainWindow
 {
@@ -42,8 +41,6 @@ public:
     ~MainWindow();
     
 private Q_SLOTS:
-    void onTurtleChanged();
-    void ensureTurtleVisible();
     void lineAboutToBeExecuted(int line);
     void scriptEnded();
     void scriptError(int line, const QString& text);
@@ -61,9 +58,6 @@ private:
 
     Ui::MainWindow *ui;
     PythonBridge* _python;
-    Turtle* _turtle;
-
-    QLabel* _display;
 
     bool _executeAll;
 };

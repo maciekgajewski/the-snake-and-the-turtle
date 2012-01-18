@@ -78,31 +78,11 @@
         <enum>QPlainTextEdit::NoWrap</enum>
        </property>
        <property name="plainText">
-        <string>from turtle import *
-color(&quot;red&quot;, &quot;yellow&quot;)
-for i in range(4):
-    forward(100)
-    right(90)</string>
+        <string>from qturtle import *
+setup(500, 500)</string>
        </property>
       </widget>
-      <widget class="QScrollArea" name="displayScrollArea">
-       <property name="widgetResizable">
-        <bool>true</bool>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <widget class="QWidget" name="scrollAreaWidgetContents">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>129</width>
-          <height>264</height>
-         </rect>
-        </property>
-       </widget>
-      </widget>
+      <widget class="QWidget" name="sceneContainer" native="true"/>
      </widget>
     </item>
    </layout>

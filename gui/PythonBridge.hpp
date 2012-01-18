@@ -30,14 +30,12 @@
 
 namespace Turtle {
 
-class Turtle;
-
 /// Bridge between python and an instance of turtle
 class PythonBridge : public QObject
 {
     Q_OBJECT
 public:
-    PythonBridge(Turtle* turtle, QObject* parent = nullptr);
+    PythonBridge(QObject* parent = nullptr);
 
 public Q_SLOTS:
 
@@ -57,20 +55,12 @@ private Q_SLOTS:
 
 private:
 
-    static Turtle* _turtle; // TODO don't !!!!
-
-    // truelre implementation
-    static PyObject* turtle_forward(PyObject *self, PyObject *args);
-    static PyObject* turtle_backward(PyObject *self, PyObject *args);
-    static PyObject* turtle_left(PyObject *self, PyObject *args);
-    static PyObject* turtle_right(PyObject *self, PyObject *args);
-    static PyObject* turtle_color(PyObject *self, PyObject *args);
-
     // utils
 
     static PyObject* initModule();
     static QString repr(PyObject* o);
     static int trace(PyObject *obj, PyFrameObject *frame, int what, PyObject *arg);
+    static PythonBridge* _instance;
 
     /// Runs script. Executed in separate thread
     PyObject* runScript(QString code);

@@ -21,8 +21,9 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
 
-#include "Turtle.hpp"
 #include "PythonBridge.hpp"
+
+#include "qturtle/Module.hpp"
 
 #include <QTimer>
 #include <QMessageBox>
@@ -36,19 +37,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    _turtle = new Turtle(this);
-    _python = new PythonBridge(_turtle, this);
-    _display = new QLabel(ui->displayScrollArea);
-    ui->displayScrollArea->setWidget(_display);
+    _python = new PythonBridge(this);
 
-    connect(_turtle, SIGNAL(changed()), SLOT(onTurtleChanged()));
     connect(_python, SIGNAL(currentLineChanged(int)), SLOT(lineAboutToBeExecuted(int)));
     connect(_python, SIGNAL(scriptEnded()), SLOT(scriptEnded()));
     connect(_python, SIGNAL(scriptError(int,QString)), SLOT(scriptError(int,QString)));
 
-    onTurtleChanged();
-
     QTimer::singleShot(0, this, SLOT(ensureTurtleVisible()));
+
+    // embedd module
+    TurtleModule::Module::initialiseEmbedded(ui->sceneContainer);
 }
 
 MainWindow::~MainWindow()
@@ -56,28 +54,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::onTurtleChanged()
-{
-    QPixmap pic = _turtle->render();
-    _display->resize(pic.size());
-    _display->setPixmap(pic);
-}
-
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
 
-    ensureTurtleVisible();
+    // TODO remove if not used
 }
 
-void MainWindow::ensureTurtleVisible()
-{
-    QPoint turtlePos = _turtle->turtlePos().toPoint();
-    ui->displayScrollArea->ensureVisible(
-        turtlePos.x(), turtlePos.y(),
-        ui->displayScrollArea->width() * 0.5,
-         ui->displayScrollArea->height() * 0.5);
-}
 
 void MainWindow::on_startButton_clicked()
 {
@@ -85,7 +68,6 @@ void MainWindow::on_startButton_clicked()
     ui->startButton->setEnabled(false);
 
     QString code = ui->codeEditor->toPlainText();
-    _turtle->reset();
     _executeAll = false;
     _python->executeScript(code);
 }
@@ -96,7 +78,6 @@ void MainWindow::on_executeAllButton_clicked()
     ui->startButton->setEnabled(false);
 
     QString code = ui->codeEditor->toPlainText();
-    _turtle->reset();
     _executeAll = true;
     _python->executeScript(code);
 
