@@ -5,8 +5,9 @@
 
 namespace TurtleModule {
 
-
 PyObject* setup_global(PyObject *self, PyObject *args, PyObject *keywd);
+PyObject* bgcolor_global(PyObject *self, PyObject *args);
+PyObject* mode_global(PyObject */*self*/, PyObject *args, PyObject* keywords);
 
 } // namespace TurtleModule
 

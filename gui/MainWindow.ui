@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>523</width>
-    <height>368</height>
+    <width>596</width>
+    <height>437</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -68,6 +68,12 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="Turtle::EditorWidget" name="codeEditor">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
          <family>Courier New</family>
@@ -82,7 +88,14 @@
 setup(500, 500)</string>
        </property>
       </widget>
-      <widget class="QWidget" name="sceneContainer" native="true"/>
+      <widget class="QWidget" name="sceneContainer" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -92,7 +105,7 @@ setup(500, 500)</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>523</width>
+     <width>596</width>
      <height>21</height>
     </rect>
    </property>

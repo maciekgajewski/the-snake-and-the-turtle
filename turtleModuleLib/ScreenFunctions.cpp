@@ -64,4 +64,97 @@ PyObject* setup_global(PyObject */*self*/, PyObject *args, PyObject* keywords)
     setup(s, args, keywords);
 }
 
+static PyObject* bgcolor(TurtleScreen* s, PyObject *args)
+{
+    char* colorName = nullptr;
+
+    int r,g,b;
+
+    if (s)
+    {
+        if (PySequence_Length(args) == 0)
+        {
+            qDebug() << "Parameterless bgcolor called";
+            return colorToTuple(s->bgcolor());
+        }
+        else
+        {
+            QColor color = argsToColor(args);
+            if (color.isValid())
+            {
+                qDebug() << "invoking bgcolor" << color;
+                QMetaObject::invokeMethod(s, "bgcolor", Qt::QueuedConnection, Q_ARG(QColor, color));
+                Py_RETURN_NONE;
+            }
+            else
+            {
+                qDebug() << "bgcolor called with invalid color";
+                return NULL;
+            }
+        }
+    }
+
+    return NULL;
+}
+
+PyObject* bgcolor_global(PyObject */*self*/, PyObject *args)
+{
+    TurtleScreen* s = getScreen();
+    bgcolor(s, args);
+}
+
+static PyObject* mode(TurtleScreen* s, PyObject *args, PyObject *keywds)
+{
+    const char* modeName = nullptr;
+    static char *kwlist[] = {"mode", NULL};
+
+    if (s)
+    {
+        if (PyArg_ParseTupleAndKeywords(args, keywds, "|s", kwlist, &modeName))
+        {
+            if (modeName == NULL)
+            {
+                TurtleScreen::Mode m = s->mode();
+                switch(m)
+                {
+                case TurtleScreen::MODE_LOGO:
+                    return PyUnicodeUCS2_FromString("logo");
+                case TurtleScreen::MODE_STANDARD:
+                    return PyUnicodeUCS2_FromString("standard");
+                case TurtleScreen::MODE_WORLD:
+                    return PyUnicodeUCS2_FromString("world");
+                default:
+                    PyErr_SetString(PyExc_RuntimeError, "Screen in unknown mode");
+                    return NULL;
+                }
+            }
+            else
+            {
+                TurtleScreen::Mode newMode = TurtleScreen::MODE_STANDARD;
+
+                if (QString(modeName) == "logo") newMode = TurtleScreen::MODE_LOGO;
+                else if (QString(modeName) == "standard") newMode = TurtleScreen::MODE_STANDARD;
+                else if (QString(modeName) == "world") newMode = TurtleScreen::MODE_WORLD;
+                else
+                {
+                    PyErr_SetString(PyExc_RuntimeError, "Invalid mode name");
+                    return NULL;
+                }
+
+                qDebug() << "Setting mode to " << newMode;
+                QMetaObject::invokeMethod(s, "mode", Qt::QueuedConnection, Q_ARG(TurtleScreen::Mode, newMode));
+                Py_RETURN_NONE;
+            }
+        }
+    }
+
+    return NULL;
+}
+
+PyObject* mode_global(PyObject */*self*/, PyObject *args, PyObject* keywords)
+{
+    TurtleScreen* s = getScreen();
+    mode(s, args, keywords);
+}
+
 } // namespace TurtleModule

@@ -14,23 +14,6 @@ namespace TurtleModule {
 QMutex Module::_mutex;
 Module* Module::_instance = nullptr;
 
-/// Application thread used when module is run in non-qt environment
-
-class ApplicationThread : public QThread
-{
-public:
-    ApplicationThread(QObject* parent) : QThread(parent) { }
-
-protected:
-
-    virtual void run()
-    {
-        qDebug() << "app thread started, id: " << QThread::currentThreadId();
-        exec();
-    }
-};
-
-
 Module::Module()
     : QObject(), _screen(nullptr)
 {
@@ -50,16 +33,8 @@ Module::Module()
         // TODO the only robust way of doing it is to spawn new process and send commands over IPC.
         // I'll pass for now
 
-        // ugh... we need to create application and start event loop in a secondary thread
-
-        char appname[] = "python";
-        char* argv = appname;
-        int argc = 1;
-
-        new QApplication(argc, &argv);
-        ApplicationThread* t = new ApplicationThread(this);
-        t->start();
-        moveToThread(t);
+        // TODO
+        Q_ASSERT(false);
     }
 
 }

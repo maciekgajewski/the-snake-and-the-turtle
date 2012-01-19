@@ -14,6 +14,7 @@ public:
 public Q_SLOTS:
 
     virtual void setup(const QRect &geometry);
+
 };
 
 } // namespace TurtleModule

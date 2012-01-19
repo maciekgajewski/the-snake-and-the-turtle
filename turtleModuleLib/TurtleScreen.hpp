@@ -3,6 +3,8 @@
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QMutex>
+
 
 namespace TurtleModule {
 
@@ -11,15 +13,28 @@ namespace TurtleModule {
 class TurtleScreen : public QGraphicsView
 {
     Q_OBJECT
+    Q_ENUMS(Mode);
+
 public:
     explicit TurtleScreen(QWidget *parent = 0);
     
+    // types
+    enum Mode
+    {
+        MODE_STANDARD,
+        MODE_LOGO,
+        MODE_WORLD
+    };
 
+    // inter-thread getters
+    QColor bgcolor();
+    Mode mode();
 
 public Q_SLOTS:
 
     // window control
     void bgcolor(const QColor& color);
+    void mode(Mode m);
 
     // (not implemented here) Screen methods
     virtual void setup(const QRect& geometry);
@@ -27,6 +42,11 @@ public Q_SLOTS:
 private:
 
     QGraphicsScene _scene;
+    QMutex _mutex;
+
+    // props
+    QColor _bgcolor;
+    Mode _mode;
 };
 
 } // namespace TurtleModule
