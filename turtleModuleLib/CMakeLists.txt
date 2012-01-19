@@ -5,21 +5,21 @@ QT4_WRAP_CPP(mocfiles
     Turtle.hpp
 )
 
-ADD_LIBRARY(qturtle STATIC
+ADD_LIBRARY(turtleModuleLib STATIC
 
     Screen.cpp Screen.hpp
     TurtleScreen.cpp TurtleScreen.hpp
-    qturtle_global.cpp qturtle_global.hpp
     Module.cpp Module.hpp
     Turtle.cpp Turtle.hpp
-    globalFunctions.cpp globalFunctions.hpp
+    GlobalFunctions.cpp GlobalFunctions.hpp
+    ScreenFunctions.cpp ScreenFunctions.hpp
 
     ${mocfiles}
 )
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-TARGET_LINK_LIBRARIES(qturtle
+TARGET_LINK_LIBRARIES(turtleModuleLib
     ${QT_LIBRARIES}
     ${PYTHON_LIBRARIES}
 )

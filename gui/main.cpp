@@ -24,7 +24,6 @@
 
 #include <Python.h>
 
-
 int main(int argc, char *argv[])
 {
     Py_Initialize();
@@ -33,7 +32,6 @@ int main(int argc, char *argv[])
     Turtle::MainWindow w;
     w.show();
 
-    
     int r =  a.exec();
 
     Py_Finalize();

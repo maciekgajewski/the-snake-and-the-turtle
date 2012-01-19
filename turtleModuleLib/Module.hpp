@@ -21,8 +21,6 @@
 #ifndef TURTLEMODULE_MODULE_HPP
 #define TURTLEMODULE_MODULE_HPP
 
-#include "qturtle_global.hpp"
-
 #include <QObject>
 #include <QMutex>
 #include <QWidget>
@@ -51,6 +49,8 @@ public:
 private:
     Module();
     Module(QWidget* widget);
+
+    virtual bool event(QEvent *e);
 
     // singleton instance
     static QMutex _mutex; // guarding the instance

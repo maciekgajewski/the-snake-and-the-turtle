@@ -23,11 +23,9 @@ ADD_EXECUTABLE(gui WIN32
     ${uifiles}
 )
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-
 TARGET_LINK_LIBRARIES(gui
 
-    qturtle
+    turtleModuleLib
     ${QT_LIBRARIES}
     ${PYTHON_LIBRARIES}
 )

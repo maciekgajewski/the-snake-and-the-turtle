@@ -18,12 +18,12 @@
 *
 * The Original Code is: all of this file.
 */
-#include "MainWindow.hpp"
-#include "ui_MainWindow.h"
+#include "gui/MainWindow.hpp"
+#include "gui/ui_MainWindow.h"
 
-#include "PythonBridge.hpp"
+#include "gui/PythonBridge.hpp"
 
-#include "qturtle/Module.hpp"
+#include "turtleModuleLib/Module.hpp"
 
 #include <QTimer>
 #include <QMessageBox>

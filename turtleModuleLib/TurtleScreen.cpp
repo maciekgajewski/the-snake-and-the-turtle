@@ -3,8 +3,9 @@
 namespace TurtleModule {
 
 TurtleScreen::TurtleScreen(QWidget *parent) :
-    QGraphicsView(&_scene, parent)
+    QGraphicsView( parent)
 {
+    setScene(&_scene);
 }
 
 void TurtleScreen::bgcolor(const QColor &color)

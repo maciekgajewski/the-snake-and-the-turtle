@@ -20,7 +20,7 @@
 */
 #include "PythonBridge.hpp"
 
-#include "qturtle/qturtle_global.hpp"
+#include "turtleModuleLib/GlobalFunctions.hpp"
 
 #include <QDebug>
 #include <QtConcurrentRun>
@@ -102,7 +102,7 @@ void PythonBridge::lineExecuted(int line)
 
 PyObject* PythonBridge::initModule()
 {
-    return PyInit_qturtle();
+    return TurtleModule::creteModule();
 }
 
 QString PythonBridge::repr(PyObject *o)

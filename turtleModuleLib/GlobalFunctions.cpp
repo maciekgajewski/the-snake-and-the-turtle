@@ -1,12 +1,27 @@
-#include "qturtle_global.hpp"
-#include "globalFunctions.hpp"
+#include "ScreenFunctions.hpp"
 
-extern "C"
+#include "Module.hpp"
+#include "TurtleScreen.hpp"
+
+namespace TurtleModule
 {
+
+TurtleScreen* getScreen()
+{
+    try
+    {
+        return Module::instance()->screen();
+    }
+    catch(const std::exception& e)
+    {
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+        return nullptr;
+    }
+}
 
 
 static PyMethodDef qturtleMethods[] = {
-    {"setup",  TurtleModule::setup, METH_VARARGS,
+    {"setup",  (PyCFunction)TurtleModule::setup_global, METH_VARARGS| METH_KEYWORDS,
      "Set the size and position of the main window."},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
@@ -20,8 +35,7 @@ static struct PyModuleDef qturtleModule = {
    qturtleMethods
 };
 
-PyMODINIT_FUNC
-PyInit_qturtle()
+PyObject* creteModule()
 {
     PyObject *m;
 
@@ -31,13 +45,5 @@ PyInit_qturtle()
 
     return m;
 }
-
-/*
-PyMODINIT_FUNC initqturtle()
-{
-    return PyInit_qturtle();
-}
-*/
-
 
 }
