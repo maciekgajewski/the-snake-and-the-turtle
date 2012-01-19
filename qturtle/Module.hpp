@@ -35,7 +35,7 @@ class TurtleScreen;
 /// The insatnce of this class is created automatically when needed and performs neccesary initalizations,
 // or it can be created manually to control th behaviour of the module (ie to embedd the screen in Qt app)
 
-class QTURTLESHARED_EXPORT Module : public QObject
+class Module : public QObject
 {
     Q_OBJECT
 public:

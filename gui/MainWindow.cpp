@@ -43,8 +43,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_python, SIGNAL(scriptEnded()), SLOT(scriptEnded()));
     connect(_python, SIGNAL(scriptError(int,QString)), SLOT(scriptError(int,QString)));
 
-    QTimer::singleShot(0, this, SLOT(ensureTurtleVisible()));
-
     // embedd module
     TurtleModule::Module::initialiseEmbedded(ui->sceneContainer);
 }

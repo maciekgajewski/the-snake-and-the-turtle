@@ -112,7 +112,7 @@ setup(500, 500)</string>
   <customwidget>
    <class>Turtle::EditorWidget</class>
    <extends>QPlainTextEdit</extends>
-   <header>EditorWidget.hpp</header>
+   <header>gui/EditorWidget.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>
