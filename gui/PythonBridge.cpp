@@ -41,8 +41,14 @@ PythonBridge::PythonBridge(QObject *parent)
     _instance = this;
 
     PyImport_AppendInittab("qturtle", &PythonBridge::initModule);
+    Py_Initialize();
     PyEval_SetTrace(&PythonBridge::trace, nullptr);
     connect(&_scriptResult, SIGNAL(finished()), SLOT(scriptCompleted()));
+}
+
+PythonBridge::~PythonBridge()
+{
+    Py_Finalize();
 }
 
 void PythonBridge::executeScript(const QString& script)
@@ -140,11 +146,9 @@ int PythonBridge::trace(PyObject *obj, PyFrameObject *frame, int what, PyObject 
 
 PyObject* PythonBridge::runScript(QString code)
 {
-    PyObject* locals = PyDict_New();
     PyObject* mainModule = PyImport_AddModule("__main__");
     PyObject* globals = PyModule_GetDict(mainModule);
-    PyObject* res = PyRun_String(code.toAscii(), Py_file_input, globals, locals);
-    Py_DECREF(locals);
+    PyObject* res = PyRun_String(code.toAscii(), Py_file_input, globals, globals);
 
     return res;
 }

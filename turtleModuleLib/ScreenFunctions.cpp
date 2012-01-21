@@ -164,8 +164,8 @@ static PyObject* setworldcoordinates(TurtleScreen* s, PyObject *args)
 {
     if(s)
     {
-        int llx, lly, urx, ury;
-        if (PyArg_ParseTuple(args, "iiii", &llx, &lly, &urx, &ury))
+        double llx, lly, urx, ury;
+        if (PyArg_ParseTuple(args, "dddd", &llx, &lly, &urx, &ury))
         {
             QRectF world(llx, ury, urx-llx, ury-lly);
             QMetaObject::invokeMethod(s, "setworldcoordinates", Qt::QueuedConnection, Q_ARG(QRectF, world));
@@ -179,37 +179,27 @@ static PyObject* setworldcoordinates(TurtleScreen* s, PyObject *args)
 
 PyObject* setworldcoordinates_global(PyObject */*self*/, PyObject *args)
 {
-    TurtleScreen* s = getScreen();
-    return setworldcoordinates(s, args);
-}
-
-static PyObject* no_params(TurtleScreen* s, const char* method)
-{
-    if (s)
-    {
-        qDebug() << "no_params: " << method;
-        bool res = QMetaObject::invokeMethod(s, method, Qt::QueuedConnection);
-        QApplication::processEvents();
-        qDebug() << "invoked: " << res;
-        Py_RETURN_NONE;
-    }
-
-    return NULL;
+    return setworldcoordinates(getScreen(), args);
 }
 
 PyObject* mainloop_global(PyObject* /*self*/, PyObject* /*args*/)
 {
-    return no_params(getScreen(), "mainloop");
+    return invoke0(getScreen(), "mainloop");
 }
 
 PyObject* bye_global(PyObject* /*self*/, PyObject* /*args*/)
 {
-    return no_params(getScreen(), "bye");
+    return invoke0(getScreen(), "bye");
 }
 
 PyObject* exitonclick_global(PyObject* /*self*/, PyObject* /*args*/)
 {
-    return no_params(getScreen(), "exitonclick");
+    return invoke0(getScreen(), "exitonclick");
+}
+
+PyObject* resetscreen_global(PyObject* /*self*/, PyObject* /*args*/)
+{
+    return invoke0(getScreen(), "reset");
 }
 
 

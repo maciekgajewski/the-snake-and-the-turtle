@@ -36,6 +36,7 @@ class PythonBridge : public QObject
     Q_OBJECT
 public:
     PythonBridge(QObject* parent = nullptr);
+    ~PythonBridge();
 
 public Q_SLOTS:
 

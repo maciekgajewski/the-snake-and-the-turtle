@@ -36,6 +36,15 @@ PyObject* shape_global(PyObject *self, PyObject *args);
 PyObject* pencolor_global(PyObject *self, PyObject *args);
 PyObject* fillcolor_global(PyObject *self, PyObject *args);
 PyObject* color_global(PyObject *self, PyObject *args);
+PyObject* forward_global(PyObject *self, PyObject *args);
+PyObject* backward_global(PyObject *self, PyObject *args);
+PyObject* goto_global(PyObject *self, PyObject *args);
+PyObject* stamp_global(PyObject *self, PyObject *args);
+PyObject* reset_global(PyObject *self, PyObject *args);
+PyObject* left_global(PyObject *self, PyObject *args);
+PyObject* right_global(PyObject *self, PyObject *args);
+PyObject* setheading_global(PyObject *self, PyObject *args);
+PyObject* heading_global(PyObject *self, PyObject *args);
 
 
 

@@ -49,6 +49,8 @@ public:
     /// Reset the module
     void reset();
 
+    bool isEmbedded() const { return _embedded; }
+
 private:
     Module();
     Module(QWidget* widget);

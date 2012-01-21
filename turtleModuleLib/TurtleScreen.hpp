@@ -51,6 +51,10 @@ public:
     QColor bgcolor();
     Mode mode();
 
+    // turtle's neutral heading
+    double neutralRotationRadians() const;
+    double rotationMultiplier() const;
+
     Turtle* turtle() const;
 
 public Q_SLOTS:

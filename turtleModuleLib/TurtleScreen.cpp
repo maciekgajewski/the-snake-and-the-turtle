@@ -53,6 +53,22 @@ TurtleScreen::Mode TurtleScreen::mode()
     return _mode;
 }
 
+double TurtleScreen::neutralRotationRadians() const
+{
+    if (_mode == MODE_LOGO)
+        return 0;
+    else
+        return -3.14159/2;
+}
+
+double TurtleScreen::rotationMultiplier() const
+{
+    if (_mode == MODE_LOGO)
+        return -1.0;
+    else
+        return 1.0;
+}
+
 Turtle *TurtleScreen::turtle() const
 {
     return _turtles[0];
@@ -86,7 +102,7 @@ void TurtleScreen::mode(int m)
             case MODE_STANDARD:
             {
                 QTransform t;
-                t.rotate(-90.0);
+                t.scale(1.0, -1.0);
                 setTransform(t);
             }
 
@@ -114,6 +130,10 @@ void TurtleScreen::setworldcoordinates(const QRectF& coords)
 
 void TurtleScreen::reset()
 {
+    QTransform t;
+    t.scale(1.0, -1.0);
+    setTransform(t);
+
     Q_FOREACH(Turtle* t, _turtles)
     {
         t->reset();

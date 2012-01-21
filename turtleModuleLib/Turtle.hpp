@@ -13,16 +13,19 @@
 namespace TurtleModule
 {
 
+class TurtleScreen;
+
 /// The turtle class implementation
 class Turtle : public QObject, public QGraphicsItem
 {
     Q_OBJECT
+    Q_INTERFACES(QGraphicsItem)
 
 public:
     typedef std::pair<QString, QPolygonF> NamedShape;
     typedef std::map<QString, QPolygonF> PolygonDictionary;
 
-    Turtle(QObject* parent = NULL);
+    Turtle(TurtleScreen* parent);
 
 public: // QGraphicsItem
 
@@ -37,6 +40,9 @@ public: // intra-thread state getters
     bool isdown();
     QPen pen();
     QBrush brush();
+    double rotationDegrees();
+    double rotationRadians();
+    double heading();
 
 public:
 
@@ -54,10 +60,17 @@ public Q_SLOTS:
     void setPenDown(bool down);
     void setPen(const QPen& pen);
     void setBrush(const QBrush& brush);
+    void forward(double steps);
+    void goTo(const QPointF& target);
+    int stamp();
+    void left(double angle);
+    void setheading(double angle);
 
 private:
 
     QMutex _mutex;
+    QList<QGraphicsItem*> _drawing;
+    TurtleScreen* _screen;
 
     // state, available across threads
 
@@ -65,8 +78,10 @@ private:
     QPen _pen;
     QBrush _brush;
     QPointF _position;
+    double _rotationRadians;
     QSizeF _shapesize;
     bool _isdown;
+    double _fullcircle; // angle units per fullcircle
 
     QPolygonF _shape;
     QString _shapename;

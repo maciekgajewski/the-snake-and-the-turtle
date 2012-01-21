@@ -22,19 +22,13 @@
 #include <QtGui/QApplication>
 #include "MainWindow.hpp"
 
-#include <Python.h>
-
 int main(int argc, char *argv[])
 {
-    Py_Initialize();
-
     QApplication a(argc, argv);
     Turtle::MainWindow w;
     w.show();
 
     int r =  a.exec();
-
-    Py_Finalize();
 
     return r;
 }

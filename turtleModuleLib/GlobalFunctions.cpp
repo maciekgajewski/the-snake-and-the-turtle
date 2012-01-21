@@ -4,6 +4,8 @@
 #include "Module.hpp"
 #include "TurtleScreen.hpp"
 
+#include <QApplication>
+
 namespace TurtleModule
 {
 
@@ -34,14 +36,14 @@ static PyMethodDef qturtleMethods[] = {
         "Set turtle mode ('standard', 'logo' or 'world') and perform reset. If mode is not given, current mode is returned."},
     {"setworldcoordinates", TurtleModule::setworldcoordinates_global,  METH_VARARGS,
         "Set up user-defined coordinate system and switch to mode 'world' if necessary."},
-    {"tracer", not_implemented_global,  METH_VARARGS| METH_KEYWORDS,
-        "Turn turtle animation on/off and set delay for update drawings."},
     {"mainloop", mainloop_global,  METH_VARARGS,
         "Starts event loop - calling Qt's mainloop function. Must be the last statement in a turtle graphics program."},
     {"bye", bye_global,  METH_VARARGS,
         "Shut turtlegraphics window."},
     {"exitonclick", exitonclick_global,  METH_VARARGS,
         "Bind window bye() to window click event."},
+    {"resetscreen", resetscreen_global,  METH_VARARGS,
+        "Reset all Turtles on the Screen to their initial state."},
 
     {"hideturtle", hideturtle_global, METH_VARARGS,
         "Make the turtle invisible."},
@@ -75,6 +77,42 @@ static PyMethodDef qturtleMethods[] = {
         "Return or set the fillcolor."},
     {"color", color_global, METH_VARARGS,
         "Return or set pencolor and fillcolor."},
+    {"tracer", not_implemented_global,  METH_VARARGS| METH_KEYWORDS,
+        "Turn turtle animation on/off and set delay for update drawings."},
+    {"speed", not_implemented_global,  METH_VARARGS| METH_KEYWORDS,
+        "Set the turtle’s speed to an integer value in the range 0..10. If no argument is given, return current speed."},
+    {"goto", goto_global,  METH_VARARGS,
+        "Move turtle to an absolute position. If the pen is down, draw line. Do not change the turtle’s orientation."},
+    {"setpos", goto_global,  METH_VARARGS,
+        "Move turtle to an absolute position. If the pen is down, draw line. Do not change the turtle’s orientation."},
+    {"setposition", goto_global,  METH_VARARGS,
+        "Move turtle to an absolute position. If the pen is down, draw line. Do not change the turtle’s orientation."},
+    {"forward", forward_global,  METH_VARARGS,
+        "Move the turtle forward by the specified distance, in the direction the turtle is headed."},
+    {"fw", forward_global,  METH_VARARGS,
+        "Move the turtle forward by the specified distance, in the direction the turtle is headed."},
+    {"backward", forward_global,  METH_VARARGS,
+        "Move the turtle backward by the specified distance, in the direction the turtle is headed."},
+    {"back", forward_global,  METH_VARARGS,
+        "Move the turtle backward by the specified distance, in the direction the turtle is headed."},
+    {"bk", forward_global,  METH_VARARGS,
+        "Move the turtle backward by the specified distance, in the direction the turtle is headed."},
+    {"stamp", stamp_global,  METH_VARARGS,
+        "Stamp a copy of the turtle shape onto the canvas at the current turtle position."},
+    {"left", left_global,  METH_VARARGS,
+        "Turn turtle left by angle units."},
+    {"lt", left_global,  METH_VARARGS,
+        "Turn turtle left by angle units."},
+    {"right", right_global,  METH_VARARGS,
+        "Turn turtle right by angle units."},
+    {"rt", right_global,  METH_VARARGS,
+        "Turn turtle right by angle units."},
+    {"setheading", setheading_global,  METH_VARARGS,
+        "Set the orientation of the turtle to to_angle."},
+    {"seth", setheading_global,  METH_VARARGS,
+        "Set the orientation of the turtle to to_angle."},
+    {"seth", heading_global,  METH_VARARGS,
+        "Return the turtle’s current heading."},
 
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
@@ -146,5 +184,49 @@ void resetModule()
     Module::instance()->reset();
 }
 
+PyObject* invoke1(QObject* obj, const char* name, QGenericArgument param)
+{
+    bool r = QMetaObject::invokeMethod(obj, name, Qt::QueuedConnection, param);
+    QApplication::processEvents();
+    if (r)
+    {
+        Py_RETURN_NONE;
+    }
+    else
+    {
+        PyErr_SetString(PyExc_RuntimeError, "Failed to invoke method");
+        return NULL;
+    }
+}
+// incokes and blocks until the method completes
+PyObject* invoke1wait(QObject* obj, const char* name, QGenericArgument param)
+{
+    Qt::ConnectionType ct = Module::instance()->isEmbedded() ?
+        Qt::BlockingQueuedConnection : Qt::DirectConnection;
+    bool r = QMetaObject::invokeMethod(obj, name, ct, param);
+    QApplication::processEvents();
+
+    if (r)
+    {
+        Py_RETURN_NONE;
+    }
+    else
+    {
+        PyErr_SetString(PyExc_RuntimeError, "Failed to invoke method");
+        return NULL;
+    }
+}
+
+PyObject* invoke0(QObject* s, const char* method)
+{
+    if (s)
+    {
+        QMetaObject::invokeMethod(s, method, Qt::QueuedConnection);
+        QApplication::processEvents();
+        Py_RETURN_NONE;
+    }
+
+    return NULL;
+}
 
 }

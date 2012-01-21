@@ -1,20 +1,25 @@
 #include "Turtle.hpp"
 
+#include "TurtleScreen.hpp"
+
 #include <QPainter>
 #include <QMutexLocker>
 #include <QApplication>
+#include <QDebug>
 
 #include <cmath>
 
 namespace TurtleModule
 {
 
+static const double TWOPI = 3.14159*2.0;
+
 static QPolygonF circle(unsigned int segments, double radius)
 {
     QPolygonF p;
     for(unsigned int i = 0; i < segments; ++i)
     {
-        double a = 3.14159*2.0*i / segments;
+        double a = TWOPI*i / segments;
         p << QPointF(radius * std::sin(a), radius * std::cos(a));
     }
 
@@ -29,6 +34,9 @@ static Turtle::NamedShape shapes[] = {
         "square",
         QPolygonF(QPolygonF() << QPointF(10,10) << QPointF(10,-10) << QPointF(-10,-10) << QPointF(-10,10))),
     Turtle::NamedShape(
+        "triangle",
+        QPolygonF(QPolygonF() << QPointF(0,20) << QPointF(-10,0) << QPointF(10,0))),
+    Turtle::NamedShape(
         "circle",
         circle(20,5)),
 
@@ -36,9 +44,12 @@ static Turtle::NamedShape shapes[] = {
 
 Turtle::PolygonDictionary Turtle::_shapes(shapes, shapes + sizeof(shapes)/sizeof(Turtle::NamedShape));
 
-Turtle::Turtle(QObject *parent) : QObject(parent), _mutex(QMutex::Recursive)
+Turtle::Turtle(TurtleScreen *parent)
+    : QObject(parent), _mutex(QMutex::Recursive), _screen(parent)
 {
     reset();
+    setZValue(1.0);
+    setFlag(ItemIgnoresTransformations);
 }
 
 void Turtle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -92,6 +103,12 @@ QBrush Turtle::brush()
     return _brush;
 }
 
+double Turtle::rotationDegrees()
+{
+    QMutexLocker l(&_mutex);
+    return 360*_rotationRadians / TWOPI;
+}
+
 void Turtle::showturtle()
 {
     QMutexLocker l(&_mutex);
@@ -121,11 +138,21 @@ void Turtle::reset()
     _brush = Qt::black;
     _visible = true;
     _position = QPointF(0,0);
+    _rotationRadians = _screen->neutralRotationRadians();
     _shapesize = QSizeF(1.0, 1.0);
     setTransform(QTransform());
     _isdown = true;
+    _fullcircle = 360.0;
 
     setPos(_position);
+    setRotation(rotationDegrees());
+
+    // delete drawing
+    Q_FOREACH(QGraphicsItem* i, _drawing)
+    {
+        delete i;
+    }
+    _drawing.clear();
 }
 
 void Turtle::shapesize(const QSizeF &size)
@@ -139,6 +166,7 @@ void Turtle::shapesize(const QSizeF &size)
         QTransform newTrandform;
         newTrandform.scale(_shapesize.width(), _shapesize.height());
         setTransform(newTrandform);
+        update();
     }
 }
 
@@ -183,11 +211,76 @@ void Turtle::setBrush(const QBrush &brush)
 
 }
 
+void Turtle::forward(double steps)
+{
+    goTo(_position + QPointF(steps*std::sin(_rotationRadians), steps*std::cos(_rotationRadians)));
+}
+
+void Turtle::goTo(const QPointF &target)
+{
+    QMutexLocker l(&_mutex);
+
+    // TODO implement animation
+    if (_isdown)
+    {
+        QLineF line(_screen->transform().map(QLineF(_position, target)));
+        QGraphicsLineItem* item = new QGraphicsLineItem(line, 0, scene());
+        item->setFlag(ItemIgnoresTransformations);
+        item->setPen(_pen);
+        _drawing.append(item);
+    }
+    _position = target;
+    setPos(_position);
+}
+
+int Turtle::stamp()
+{
+    // create a copy of turtle
+    QGraphicsPolygonItem* item = new QGraphicsPolygonItem(_shape, 0, scene());
+    item->setFlag(ItemIgnoresTransformations);
+    item->setPen(_pen);
+    item->setBrush(_brush);
+    item->setPos(_position);
+    item->setRotation(rotationDegrees());
+    item->setTransform(transform());
+
+    _drawing.append(item);
+    return _drawing.size() - 1; // stamp-id is an index in the _drawing
+}
+
+void Turtle::left(double angle)
+{
+    QMutexLocker l(&_mutex);
+    // TODO implement animation
+    _rotationRadians += _screen->rotationMultiplier() * angle*TWOPI/_fullcircle;
+    setRotation(rotationDegrees());
+}
+
+void Turtle::setheading(double angle)
+{
+    // TODO implement animation
+    _rotationRadians = _screen->neutralRotationRadians() +  _screen->rotationMultiplier() *angle*TWOPI/_fullcircle;
+    setRotation(rotationDegrees());
+}
+
 QString Turtle::turtleshape()
 {
     QMutexLocker l(&_mutex);
     return _shapename;
 
+}
+
+double Turtle::rotationRadians()
+{
+    QMutexLocker l(&_mutex);
+    return _rotationRadians;
+}
+
+double Turtle::heading()
+{
+    QMutexLocker l(&_mutex);
+
+    return _rotationRadians * _fullcircle / TWOPI;
 }
 
 

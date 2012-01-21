@@ -25,6 +25,13 @@ QColor argsToColor(PyObject* args);
 /// Converts color to RGB tuple
 PyObject* colorToTuple(const QColor& color);
 
+// other
+
+// cross-thread call with 1 argument
+PyObject* invoke1(QObject* obj, const char* name, QGenericArgument param);
+// incokes and blocks until the method completes
+PyObject* invoke1wait(QObject* obj, const char* name, QGenericArgument param);
+PyObject* invoke0(QObject* s, const char* method);
 }
 
 #endif // TURTLEMODULE_GLOBALFUNCTIONS_HPP

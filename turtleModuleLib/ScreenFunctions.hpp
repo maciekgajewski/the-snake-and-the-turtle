@@ -12,6 +12,7 @@ PyObject* setworldcoordinates_global(PyObject *self, PyObject *args);
 PyObject* mainloop_global(PyObject* /*self*/, PyObject* /*args*/);
 PyObject* bye_global(PyObject* /*self*/, PyObject* /*args*/);
 PyObject* exitonclick_global(PyObject* /*self*/, PyObject* /*args*/);
+PyObject* resetscreen_global(PyObject* /*self*/, PyObject* /*args*/);
 
 } // namespace TurtleModule
 
