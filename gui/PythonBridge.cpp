@@ -49,6 +49,7 @@ void PythonBridge::executeScript(const QString& script)
 {
     if (!_scriptResult.isRunning())
     {
+        TurtleModule::resetModule();
         QFuture<PyObject*> future = QtConcurrent::run(std::bind(&PythonBridge::runScript, this, script));
         _scriptResult.setFuture(future);
     }

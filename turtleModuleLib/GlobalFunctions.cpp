@@ -1,4 +1,5 @@
 #include "ScreenFunctions.hpp"
+#include "TurtleFunctions.hpp"
 
 #include "Module.hpp"
 #include "TurtleScreen.hpp"
@@ -41,6 +42,39 @@ static PyMethodDef qturtleMethods[] = {
         "Shut turtlegraphics window."},
     {"exitonclick", exitonclick_global,  METH_VARARGS,
         "Bind window bye() to window click event."},
+
+    {"hideturtle", hideturtle_global, METH_VARARGS,
+        "Make the turtle invisible."},
+    {"ht", hideturtle_global, METH_VARARGS,
+        "Make the turtle invisible."},
+    {"showturtle", showturtle_global, METH_VARARGS,
+        "Make the turtle visible."},
+    {"st", showturtle_global, METH_VARARGS,
+        "Make the turtle visible."},
+    {"isvisible", isvisible_global, METH_VARARGS,
+        "Return True if the Turtle is shown, False if it’s hidden."},
+    {"shapesize", shapesize_global, METH_VARARGS,
+        "Return or set the pen’s attributes x/y-stretchfactors and/or outline."},
+    {"turtlesize", shapesize_global, METH_VARARGS,
+        "Return or set the pen’s attributes x/y-stretchfactors and/or outline."},
+    {"pendown", pendown_global, METH_VARARGS,
+        "Pull the pen down – drawing when moving."},
+    {"pd", pendown_global, METH_VARARGS,
+        "Pull the pen down – drawing when moving."},
+    {"penup", penup_global, METH_VARARGS,
+        "Pull the pen up – no drawing when moving."},
+    {"pu", penup_global, METH_VARARGS,
+        "Pull the pen up – no drawing when moving."},
+    {"isdown", isdown_global, METH_VARARGS,
+        "Return True if pen is down, False if it’s up."},
+    {"shape", shape_global, METH_VARARGS,
+        "Set turtle shape to shape with given name or, if name is not given, return name of current shape."},
+    {"pencolor", pencolor_global, METH_VARARGS,
+        "Return or set the pencolor."},
+    {"fillcolor", fillcolor_global, METH_VARARGS,
+        "Return or set the fillcolor."},
+    {"color", color_global, METH_VARARGS,
+        "Return or set pencolor and fillcolor."},
 
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
@@ -105,6 +139,11 @@ QColor argsToColor(PyObject* args)
 PyObject* colorToTuple(const QColor& color)
 {
     return Py_BuildValue("iii", color.red(), color.green(), color.blue());
+}
+
+void resetModule()
+{
+    Module::instance()->reset();
 }
 
 

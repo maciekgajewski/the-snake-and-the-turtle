@@ -81,4 +81,10 @@ TurtleScreen *Module::screen()
     return _screen;
 }
 
+void Module::reset()
+{
+    if (_screen)
+        _screen->reset();
+}
+
 } // namespace TurtlrModule

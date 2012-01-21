@@ -14,6 +14,7 @@ class TurtleScreen;
 
 TurtleScreen* getScreen(); // returns/creates anonymous turtle screen, or sets python exception and returns null
 PyObject* creteModule();
+void resetModule();
 
 // converters
 

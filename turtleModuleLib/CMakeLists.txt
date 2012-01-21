@@ -13,6 +13,7 @@ ADD_LIBRARY(turtleModuleLib STATIC
     Turtle.cpp Turtle.hpp
     GlobalFunctions.cpp GlobalFunctions.hpp
     ScreenFunctions.cpp ScreenFunctions.hpp
+    TurtleFunctions.cpp TurtleFunctions.hpp
 
     ${mocfiles}
 )

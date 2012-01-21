@@ -145,7 +145,7 @@ static PyObject* mode(TurtleScreen* s, PyObject *args, PyObject *keywds)
                 }
 
                 qDebug() << "Setting mode to " << newMode;
-                QMetaObject::invokeMethod(s, "mode", Qt::QueuedConnection, Q_ARG(TurtleScreen::Mode, newMode));
+                QMetaObject::invokeMethod(s, "mode", Qt::QueuedConnection, Q_ARG(int, newMode));
                 Py_RETURN_NONE;
             }
         }

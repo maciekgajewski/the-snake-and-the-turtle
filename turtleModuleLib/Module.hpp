@@ -46,6 +46,9 @@ public:
     /// The unnamed, default screen. will be created if does not exist
     TurtleScreen* screen();
 
+    /// Reset the module
+    void reset();
+
 private:
     Module();
     Module(QWidget* widget);
