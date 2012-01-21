@@ -15,7 +15,7 @@ QMutex Module::_mutex;
 Module* Module::_instance = nullptr;
 
 Module::Module()
-    : QObject(), _screen(nullptr)
+    : QObject(), _screen(nullptr), _embedded(false)
 {
     qDebug() << "Module: created in thread" << QThread::currentThreadId();
 
@@ -30,17 +30,16 @@ Module::Module()
     {
         qDebug() << "Module: instance created in eviroment WITHOUT QApplication";
 
-        // TODO the only robust way of doing it is to spawn new process and send commands over IPC.
-        // I'll pass for now
-
-        // TODO
-        Q_ASSERT(false);
+        // We need to create out own app
+        const char* argv[] = {"python", NULL};
+        int argc = 1;
+        new QApplication(argc, (char**)argv);
     }
 
 }
 
 Module::Module(QWidget* widget)
-    : QObject(), _screen(nullptr)
+    : QObject(), _screen(nullptr), _embedded(true)
 {
     _screen = new TurtleScreen();
     QHBoxLayout* layout = new QHBoxLayout;
@@ -75,21 +74,11 @@ TurtleScreen *Module::screen()
     {
         qDebug() << "Module: creating screen";
         _screen = new Screen(); // top-level window
-        _screen->moveToThread(thread());
         QMetaObject::invokeMethod(_screen, "show", Qt::QueuedConnection);
+        QApplication::processEvents();
     }
 
     return _screen;
 }
-
-bool Module::event(QEvent *e)
-{
-    if (e->type() == QEvent::ThreadChange)
-    {
-        qDebug() << "Module: thread changed";
-    }
-    return QObject::event(e);
-}
-
 
 } // namespace TurtlrModule

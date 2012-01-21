@@ -1,9 +1,10 @@
 #include "Turtle.hpp"
 
 
-namespace TurtleModule {
+namespace TurtleModule
+{
 
-Turtle::Turtle()
+Turtle::Turtle(QObject *parent) : QObject(parent)
 {
 }
 

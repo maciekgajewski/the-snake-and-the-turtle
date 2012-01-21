@@ -7,7 +7,11 @@ namespace TurtleModule {
 
 PyObject* setup_global(PyObject *self, PyObject *args, PyObject *keywd);
 PyObject* bgcolor_global(PyObject *self, PyObject *args);
-PyObject* mode_global(PyObject */*self*/, PyObject *args, PyObject* keywords);
+PyObject* mode_global(PyObject *self, PyObject *args, PyObject* keywords);
+PyObject* setworldcoordinates_global(PyObject *self, PyObject *args);
+PyObject* mainloop_global(PyObject* /*self*/, PyObject* /*args*/);
+PyObject* bye_global(PyObject* /*self*/, PyObject* /*args*/);
+PyObject* exitonclick_global(PyObject* /*self*/, PyObject* /*args*/);
 
 } // namespace TurtleModule
 

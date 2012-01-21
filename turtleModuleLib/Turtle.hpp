@@ -1,12 +1,17 @@
 #ifndef TURTLEMODULE_TURTLE_HPP
 #define TURTLEMODULE_TURTLE_HPP
 
-namespace TurtleModule {
+#include <QObject>
+
+namespace TurtleModule
+{
 
 /// The turtle class implementation
-class Turtle {
+class Turtle : public QObject
+{
+    Q_OBJECT
 public:
-    Turtle();
+    Turtle(QObject* parent = NULL);
 
 };
 

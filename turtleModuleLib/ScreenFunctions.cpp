@@ -2,6 +2,7 @@
 
 #include "GlobalFunctions.hpp"
 #include "TurtleScreen.hpp"
+#include "Module.hpp"
 
 #include <QDesktopWidget>
 #include <QApplication>
@@ -51,6 +52,7 @@ static PyObject* setup(TurtleScreen* s, PyObject *args, PyObject *keywds)
             QRect g(startx, starty, width, height);
             qDebug() << "invoking setup" << g;
             QMetaObject::invokeMethod(s, "setup", Qt::QueuedConnection, Q_ARG(QRect, g));
+            QApplication::processEvents();
             Py_RETURN_NONE;
         }
     }
@@ -61,7 +63,7 @@ static PyObject* setup(TurtleScreen* s, PyObject *args, PyObject *keywds)
 PyObject* setup_global(PyObject */*self*/, PyObject *args, PyObject* keywords)
 {
     TurtleScreen* s = getScreen();
-    setup(s, args, keywords);
+    return setup(s, args, keywords);
 }
 
 static PyObject* bgcolor(TurtleScreen* s, PyObject *args)
@@ -84,6 +86,7 @@ static PyObject* bgcolor(TurtleScreen* s, PyObject *args)
             {
                 qDebug() << "invoking bgcolor" << color;
                 QMetaObject::invokeMethod(s, "bgcolor", Qt::QueuedConnection, Q_ARG(QColor, color));
+                QApplication::processEvents();
                 Py_RETURN_NONE;
             }
             else
@@ -100,7 +103,7 @@ static PyObject* bgcolor(TurtleScreen* s, PyObject *args)
 PyObject* bgcolor_global(PyObject */*self*/, PyObject *args)
 {
     TurtleScreen* s = getScreen();
-    bgcolor(s, args);
+    return bgcolor(s, args);
 }
 
 static PyObject* mode(TurtleScreen* s, PyObject *args, PyObject *keywds)
@@ -154,7 +157,61 @@ static PyObject* mode(TurtleScreen* s, PyObject *args, PyObject *keywds)
 PyObject* mode_global(PyObject */*self*/, PyObject *args, PyObject* keywords)
 {
     TurtleScreen* s = getScreen();
-    mode(s, args, keywords);
+    return mode(s, args, keywords);
 }
+
+static PyObject* setworldcoordinates(TurtleScreen* s, PyObject *args)
+{
+    if(s)
+    {
+        int llx, lly, urx, ury;
+        if (PyArg_ParseTuple(args, "iiii", &llx, &lly, &urx, &ury))
+        {
+            QRectF world(llx, ury, urx-llx, ury-lly);
+            QMetaObject::invokeMethod(s, "setworldcoordinates", Qt::QueuedConnection, Q_ARG(QRectF, world));
+            QApplication::processEvents();
+            Py_RETURN_NONE;
+        }
+    }
+
+    return NULL;
+}
+
+PyObject* setworldcoordinates_global(PyObject */*self*/, PyObject *args)
+{
+    TurtleScreen* s = getScreen();
+    return setworldcoordinates(s, args);
+}
+
+static PyObject* no_params(TurtleScreen* s, const char* method)
+{
+    if (s)
+    {
+        qDebug() << "no_params: " << method;
+        bool res = QMetaObject::invokeMethod(s, method, Qt::QueuedConnection);
+        QApplication::processEvents();
+        qDebug() << "invoked: " << res;
+        Py_RETURN_NONE;
+    }
+
+    return NULL;
+}
+
+PyObject* mainloop_global(PyObject* /*self*/, PyObject* /*args*/)
+{
+    return no_params(getScreen(), "mainloop");
+}
+
+PyObject* bye_global(PyObject* /*self*/, PyObject* /*args*/)
+{
+    return no_params(getScreen(), "bye");
+}
+
+PyObject* exitonclick_global(PyObject* /*self*/, PyObject* /*args*/)
+{
+    return no_params(getScreen(), "exitonclick");
+}
+
+
 
 } // namespace TurtleModule

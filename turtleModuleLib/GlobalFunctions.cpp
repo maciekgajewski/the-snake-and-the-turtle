@@ -19,6 +19,10 @@ TurtleScreen* getScreen()
     }
 }
 
+static PyObject* not_implemented_global(PyObject* /*self*/, PyObject* /*args*/)
+{
+    Py_RETURN_NONE;
+}
 
 static PyMethodDef qturtleMethods[] = {
     {"setup",  (PyCFunction)TurtleModule::setup_global, METH_VARARGS| METH_KEYWORDS,
@@ -26,7 +30,18 @@ static PyMethodDef qturtleMethods[] = {
     {"bgcolor",  TurtleModule::bgcolor_global, METH_VARARGS,
          "Set or return background color of the TurtleScreen."},
     {"mode", (PyCFunction)TurtleModule::mode_global,  METH_VARARGS| METH_KEYWORDS,
-        "Set turtle mode (“standard”, “logo” or “world”) and perform reset. If mode is not given, current mode is returned."},
+        "Set turtle mode ('standard', 'logo' or 'world') and perform reset. If mode is not given, current mode is returned."},
+    {"setworldcoordinates", TurtleModule::setworldcoordinates_global,  METH_VARARGS,
+        "Set up user-defined coordinate system and switch to mode 'world' if necessary."},
+    {"tracer", not_implemented_global,  METH_VARARGS| METH_KEYWORDS,
+        "Turn turtle animation on/off and set delay for update drawings."},
+    {"mainloop", mainloop_global,  METH_VARARGS,
+        "Starts event loop - calling Qt's mainloop function. Must be the last statement in a turtle graphics program."},
+    {"bye", bye_global,  METH_VARARGS,
+        "Shut turtlegraphics window."},
+    {"exitonclick", exitonclick_global,  METH_VARARGS,
+        "Bind window bye() to window click event."},
+
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
@@ -69,7 +84,12 @@ QColor argsToColor(PyObject* args)
             return QColor();
         }
     }
-    else if (PyArg_ParseTuple(args, "(bbb|b)", &r, &g, &b, &a))
+    else if (PyArg_ParseTuple(args, "(bbb)", &r, &g, &b))
+    {
+        PyErr_Clear();
+        return QColor((int)r, (int)g, (int)b, (int)a);
+    }
+    else if (PyArg_ParseTuple(args, "(bbbb)", &r, &g, &b, &a))
     {
         PyErr_Clear();
         return QColor((int)r, (int)g, (int)b, (int)a);

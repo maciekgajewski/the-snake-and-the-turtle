@@ -3,6 +3,8 @@
 
 #include "TurtleScreen.hpp"
 
+#include <QEventLoop>
+
 namespace TurtleModule {
 
 class Screen : public TurtleScreen
@@ -14,7 +16,21 @@ public:
 public Q_SLOTS:
 
     virtual void setup(const QRect &geometry);
+    virtual void mainloop();
+    virtual void bye();
+    virtual void exitonclick();
 
+protected:
+
+    virtual void closeEvent(QCloseEvent *e);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+
+private:
+
+    void exitLoop(); // eexits loop if loop is running
+
+    QEventLoop* _loop;
+    bool _exitOnClick;
 };
 
 } // namespace TurtleModule

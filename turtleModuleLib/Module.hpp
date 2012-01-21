@@ -50,14 +50,14 @@ private:
     Module();
     Module(QWidget* widget);
 
-    virtual bool event(QEvent *e);
-
     // singleton instance
     static QMutex _mutex; // guarding the instance
     static Module* _instance;
 
     /// Default screen
     TurtleScreen* _screen;
+
+    bool _embedded;
     
 };
 

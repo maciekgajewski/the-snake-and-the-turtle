@@ -5,7 +5,6 @@
 #include <QGraphicsScene>
 #include <QMutex>
 
-
 namespace TurtleModule {
 
 /// The TurtleScreen implementation.
@@ -32,12 +31,20 @@ public:
 
 public Q_SLOTS:
 
+    // see python Turtle documentation for description of these methods
+
     // window control
     void bgcolor(const QColor& color);
     void mode(Mode m);
+    void setworldcoordinates(const QRectF& coords);
+    void reset();
 
     // (not implemented here) Screen methods
     virtual void setup(const QRect& geometry);
+    virtual void mainloop();
+    virtual void bye();
+    virtual void exitonclick();
+
 
 private:
 
@@ -47,6 +54,7 @@ private:
     // props
     QColor _bgcolor;
     Mode _mode;
+    QRectF _worldCoords;
 };
 
 } // namespace TurtleModule
