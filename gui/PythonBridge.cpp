@@ -34,20 +34,28 @@
 namespace Turtle {
 
 PythonBridge* PythonBridge::_instance = nullptr;
+PyObject* PythonBridge::_exception = nullptr;
+bool PythonBridge::_stop = false;
 
 PythonBridge::PythonBridge(QObject *parent)
     : QObject(parent)
 {
+    Q_ASSERT(!_instance);
     _instance = this;
 
     PyImport_AppendInittab("qturtle", &PythonBridge::initModule);
     Py_Initialize();
     PyEval_SetTrace(&PythonBridge::trace, nullptr);
+
+    // create new exception type
+    _exception = PyErr_NewException("__main__.ScriptBreakException", NULL, NULL);
+
     connect(&_scriptResult, SIGNAL(finished()), SLOT(scriptCompleted()));
 }
 
 PythonBridge::~PythonBridge()
 {
+    Py_DECREF(_exception);
     Py_Finalize();
 }
 
@@ -55,6 +63,7 @@ void PythonBridge::executeScript(const QString& script)
 {
     if (!_scriptResult.isRunning())
     {
+        _stop = false;
         TurtleModule::resetModule();
         QFuture<PyObject*> future = QtConcurrent::run(std::bind(&PythonBridge::runScript, this, script));
         _scriptResult.setFuture(future);
@@ -70,12 +79,23 @@ void PythonBridge::step()
     _wait.wakeAll();
 }
 
+void PythonBridge::reset()
+{
+    TurtleModule::resetModule();
+}
+
+void PythonBridge::stop()
+{
+    QMutexLocker l(&_mutex);
+    _stop = true;
+}
+
 void PythonBridge::scriptCompleted()
 {
     PyObject* res = _scriptResult.result();
     if (!res)
     {
-        qDebug("error running script");
+        qDebug("scrpt finished with exception");
         PyObject* type = nullptr;
         PyObject* value = nullptr;
         PyObject* traceback = nullptr;
@@ -91,7 +111,11 @@ void PythonBridge::scriptCompleted()
             line = t->tb_lineno;
         }
 
-        Q_EMIT scriptError(line, errorText);
+        // ignore 'our' exception
+        if (type != _exception)
+        {
+            Q_EMIT scriptError(line, errorText);
+        }
     }
     else
     {
@@ -132,10 +156,22 @@ QString PythonBridge::repr(PyObject *o)
 
 int PythonBridge::trace(PyObject *obj, PyFrameObject *frame, int what, PyObject *arg)
 {
+    {
+        QMutexLocker l(&_instance->_mutex);
+        if (_stop)
+        {
+            //PyErr_SetInterrupt();
+            PyErr_SetString(_exception, "Script interrupted");
+            _stop = false;
+            return -1;
+        }
+    }
     if (what == PyTrace_LINE)
     {
         int lineNum = PyFrame_GetLineNumber(frame);
         QMetaObject::invokeMethod(_instance, "lineExecuted", Qt::QueuedConnection, Q_ARG(int, lineNum));
+
+        // wait for the green light
         _instance->_mutex.lock();
         _instance->_wait.wait(&_instance->_mutex);
         _instance->_mutex.unlock();

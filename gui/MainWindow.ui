@@ -18,6 +18,20 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
+       <widget class="QPushButton" name="mButtonNew">
+        <property name="text">
+         <string>New program</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="executeAllFastButton">
+        <property name="text">
+         <string>Execute all fast</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="executeAllButton">
         <property name="text">
          <string> Execute all</string>
@@ -38,6 +52,13 @@
         </property>
         <property name="text">
          <string>Step</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="interruptButton">
+        <property name="text">
+         <string>Interrupt</string>
         </property>
        </widget>
       </item>
@@ -85,7 +106,7 @@
        </property>
        <property name="plainText">
         <string>from qturtle import *
-setup(500, 500)</string>
+# type your code here</string>
        </property>
       </widget>
       <widget class="QWidget" name="sceneContainer" native="true">

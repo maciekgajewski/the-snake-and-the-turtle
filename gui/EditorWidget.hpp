@@ -35,13 +35,15 @@ public:
     
 public Q_SLOTS:
 
-    // sets highlighet lines. <=0 unsets
+    // sets highlighet lines. 1-based, line<=0 unsets
     void setCurrentlyExecutedLine(int line);
     void setErrorLine(int line);
+    void clearMarkers(); // removes all markers
     
 protected:
 
     virtual void resizeEvent(QResizeEvent *e);
+    virtual void keyPressEvent(QKeyEvent *e);
 
 private:
 
@@ -49,6 +51,11 @@ private:
 
     int sidebarWidth() const;
     void sidebarPaintEvent(QPaintEvent *event);
+
+    // keyboard support
+    bool handleTab(Qt::KeyboardModifiers modifiers); // handle tab press, return true if handled
+    bool handleBacktab(Qt::KeyboardModifiers modifiers); // handle tab press, return true if handled
+    bool handleBackspace(Qt::KeyboardModifiers modifiers); // unidents where appropriate
 
     int _currentLine;
     int _errorLine;

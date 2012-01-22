@@ -42,6 +42,8 @@ public Q_SLOTS:
 
     void executeScript(const QString& script);
     void step();
+    void reset(); // restes everything
+    void stop(); //breaks running script
 
 Q_SIGNALS:
 
@@ -67,6 +69,8 @@ private:
     PyObject* runScript(QString code);
 
     QFutureWatcher<PyObject*> _scriptResult;
+    static bool _stop; // intra-thread stop flag
+    static PyObject* _exception;
 
     QMutex _mutex;
     QWaitCondition _wait;

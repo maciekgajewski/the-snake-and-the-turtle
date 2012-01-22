@@ -28,6 +28,8 @@
 
 namespace Turtle {
 
+static const int INDENT = 4;
+
 EditorWidget::EditorWidget(QWidget *parent) :
     QPlainTextEdit(parent),
     _currentLine(-1),
@@ -51,6 +53,12 @@ void EditorWidget::setErrorLine(int line)
     _sidebar->update();
 }
 
+void EditorWidget::clearMarkers()
+{
+    setErrorLine(0);
+    setCurrentlyExecutedLine(0);
+}
+
 void EditorWidget::resizeEvent(QResizeEvent *e)
 {
     QPlainTextEdit::resizeEvent(e);
@@ -60,6 +68,28 @@ void EditorWidget::resizeEvent(QResizeEvent *e)
 
     setViewportMargins(sidebarWidth()+2, 0, 0, 0);
 
+}
+
+void EditorWidget::keyPressEvent(QKeyEvent *e)
+{
+    Qt::Key k = (Qt::Key)e->key();
+    if (e->key() == Qt::Key_Tab && handleTab(e->modifiers()))
+    {
+        e->setAccepted(true);
+        return;
+    }
+    else if (e->key() == Qt::Key_Backtab && handleBacktab(e->modifiers()))
+    {
+        e->setAccepted(true);
+        return;
+    }
+    else if (e->key() == Qt::Key_Backspace && handleBackspace(e->modifiers()))
+    {
+        e->setAccepted(true);
+        return;
+    }
+
+    QPlainTextEdit::keyPressEvent(e);
 }
 
 int EditorWidget::sidebarWidth() const
@@ -99,6 +129,94 @@ void EditorWidget::sidebarPaintEvent(QPaintEvent *event)
         painter.setBrush(Qt::red);
         painter.drawRect(marker);
     }
+}
+
+bool EditorWidget::handleTab(Qt::KeyboardModifiers modifiers)
+{
+    QTextCursor cursor = textCursor();
+    int selectionStart = cursor.selectionStart();
+    int selectionEnd = cursor.selectionEnd();
+
+    // no selection, simple 4-chart ident
+    if (selectionStart == selectionEnd)
+    {
+        int spacesToInsert = INDENT - cursor.columnNumber()%INDENT;
+        cursor.insertText(QString(" ").repeated(spacesToInsert));
+    }
+    // selection, indent all blocks
+    else
+    {
+        int firstSelectedBlockNumber = document()->findBlock(selectionStart).blockNumber();
+        int pastEndBlockNumber = document()->findBlock(selectionEnd).blockNumber() + 1;
+
+        cursor.beginEditBlock();
+        for(;firstSelectedBlockNumber < pastEndBlockNumber; ++firstSelectedBlockNumber)
+        {
+            QTextBlock block = document()->findBlockByNumber(firstSelectedBlockNumber);
+            cursor.setPosition(block.position());
+            cursor.insertText(QString(" ").repeated(INDENT));
+        }
+        cursor.endEditBlock();
+
+    }
+    return true;
+}
+
+bool EditorWidget::handleBacktab(Qt::KeyboardModifiers modifiers)
+{
+    QTextCursor cursor = textCursor();
+    int selectionStart = cursor.selectionStart();
+    int selectionEnd = cursor.selectionEnd();
+
+    // unindent blockl
+    if (selectionStart != selectionEnd)
+    {
+        int firstSelectedBlockNumber = document()->findBlock(selectionStart).blockNumber();
+        int pastEndBlockNumber = document()->findBlock(selectionEnd).blockNumber() + 1;
+
+        cursor.beginEditBlock();
+        for(;firstSelectedBlockNumber < pastEndBlockNumber; ++firstSelectedBlockNumber)
+        {
+            QTextBlock block = document()->findBlockByNumber(firstSelectedBlockNumber);
+            QString text = block.text();
+            int spacesToRemove = 0;
+            while(spacesToRemove < INDENT && text[spacesToRemove] == ' ')
+                ++spacesToRemove;
+            cursor.setPosition(block.position() + spacesToRemove);
+            while(spacesToRemove > 0)
+            {
+                --spacesToRemove;
+                cursor.deletePreviousChar();
+            }
+        }
+        cursor.endEditBlock();
+
+    }
+    return true;
+}
+
+bool EditorWidget::handleBackspace(Qt::KeyboardModifiers modifiers)
+{
+    // unidnednt where appropriate
+    QTextCursor cursor = textCursor();
+    QString lineBeforeCursor = cursor.block().text().left(cursor.columnNumber());
+
+    // remove indent if there are only spaces before cursor
+    if (!lineBeforeCursor.isEmpty() && lineBeforeCursor == QString(" ").repeated(lineBeforeCursor.length()))
+    {
+        int charsToRemove = cursor.columnNumber() % INDENT;
+        if (charsToRemove == 0)
+            charsToRemove = INDENT;
+
+        cursor.beginEditBlock();
+        for(int i = 0; i < charsToRemove; ++i)
+            cursor.deletePreviousChar();
+        cursor.endEditBlock();
+
+        return true;
+    }
+
+    return false;
 }
 
 } // namespace Turtle

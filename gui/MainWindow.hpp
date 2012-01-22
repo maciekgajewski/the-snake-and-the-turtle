@@ -47,8 +47,10 @@ private Q_SLOTS:
 
     void on_startButton_clicked();
     void on_executeAllButton_clicked();
-
     void on_stepButton_clicked();
+    void on_mButtonNew_clicked();
+    void on_interruptButton_clicked();
+    void on_executeAllFastButton_clicked();
 
 protected:
 
@@ -60,6 +62,7 @@ private:
     PythonBridge* _python;
 
     bool _executeAll;
+    bool _executeFast;
 };
 
 }

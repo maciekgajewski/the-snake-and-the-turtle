@@ -33,7 +33,8 @@ namespace Turtle {
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    _executeAll(false)
+    _executeAll(false),
+    _executeFast(false)
 {
     ui->setupUi(this);
 
@@ -63,10 +64,13 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::on_startButton_clicked()
 {
     ui->executeAllButton->setEnabled(false);
+    ui->interruptButton->setEnabled(true);
     ui->startButton->setEnabled(false);
+    ui->codeEditor->clearMarkers();
 
     QString code = ui->codeEditor->toPlainText();
     _executeAll = false;
+    _executeFast = false;
     _python->executeScript(code);
 }
 
@@ -74,11 +78,26 @@ void MainWindow::on_executeAllButton_clicked()
 {
     ui->executeAllButton->setEnabled(false);
     ui->startButton->setEnabled(false);
+    ui->interruptButton->setEnabled(true);
+    ui->codeEditor->clearMarkers();
 
     QString code = ui->codeEditor->toPlainText();
     _executeAll = true;
+    _executeFast = false;
     _python->executeScript(code);
+}
 
+void MainWindow::on_executeAllFastButton_clicked()
+{
+    ui->executeAllButton->setEnabled(false);
+    ui->interruptButton->setEnabled(true);
+    ui->startButton->setEnabled(false);
+    ui->codeEditor->clearMarkers();
+
+    QString code = ui->codeEditor->toPlainText();
+    _executeAll = true;
+    _executeFast = true;
+    _python->executeScript(code);
 }
 
 void MainWindow::lineAboutToBeExecuted(int line)
@@ -86,7 +105,14 @@ void MainWindow::lineAboutToBeExecuted(int line)
     ui->codeEditor->setCurrentlyExecutedLine(line);
     if (_executeAll)
     {
-        QTimer::singleShot(200, _python, SLOT(step()));
+        if (_executeFast)
+        {
+            _python->step();
+        }
+        else
+        {
+            QTimer::singleShot(200, _python, SLOT(step()));
+        }
     }
     else
     {
@@ -99,6 +125,7 @@ void MainWindow::scriptEnded()
     ui->codeEditor->setCurrentlyExecutedLine(0);
     ui->executeAllButton->setEnabled(true);
     ui->startButton->setEnabled(true);
+    ui->interruptButton->setEnabled(false);
 }
 
 void MainWindow::scriptError(int line, const QString &text)
@@ -118,6 +145,19 @@ void MainWindow::on_stepButton_clicked()
     ui->stepButton->setEnabled(false);
 }
 
+void MainWindow::on_mButtonNew_clicked()
+{
+    _python->reset();
+    ui->codeEditor->setPlainText("from qturtle import *\n");
+}
+
+void MainWindow::on_interruptButton_clicked()
+{
+    _python->stop();
+}
 
 }
+
+
+
 
