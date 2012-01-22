@@ -18,6 +18,7 @@ ADD_EXECUTABLE(gui WIN32
     MainWindow.cpp MainWindow.hpp
     PythonBridge.cpp PythonBridge.hpp
     PythonHighlighter.cpp PythonHighlighter.hpp
+    Emb.cpp Emb.hpp
 
     ${mocfiles}
     ${uifiles}

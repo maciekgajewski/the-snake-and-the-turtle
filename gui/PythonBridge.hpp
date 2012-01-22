@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QFutureWatcher>
 #include <QWaitCondition>
+#include <QTcpSocket>
 
 #include <Python.h>
 #include <frameobject.h>
@@ -50,13 +51,17 @@ Q_SIGNALS:
     void currentLineChanged(int);
     void scriptEnded();
     void scriptError(int line, const QString& text);
+    void stdoutData(const QString&);
 
 private Q_SLOTS:
 
     void scriptCompleted();
     void lineExecuted(int line);
+    void onPrintInMain(const QString&); // receives print data in main thread
 
 private:
+
+    void onPrint(const std::string& data); // receives stdout data in script thread
 
     // utils
 

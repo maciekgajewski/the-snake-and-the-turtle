@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_python, SIGNAL(currentLineChanged(int)), SLOT(lineAboutToBeExecuted(int)));
     connect(_python, SIGNAL(scriptEnded()), SLOT(scriptEnded()));
     connect(_python, SIGNAL(scriptError(int,QString)), SLOT(scriptError(int,QString)));
+    connect(_python, SIGNAL(stdoutData(QString)), ui->consoleOutput, SLOT(appendPlainText(QString)));
 
     // embedd module
     TurtleModule::Module::initialiseEmbedded(ui->sceneContainer);

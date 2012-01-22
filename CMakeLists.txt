@@ -2,7 +2,7 @@ PROJECT(TheSnakeAndTheTurtle)
 cmake_minimum_required(VERSION 2.8)
 
 # Qt config
-FIND_PACKAGE(Qt4 4.4 REQUIRED QtCore QtGui )
+FIND_PACKAGE(Qt4 4.4 REQUIRED QtCore QtGui QtNetwork)
 INCLUDE(${QT_USE_FILE})
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 

@@ -19,12 +19,15 @@
 * The Original Code is: all of this file.
 */
 #include "PythonBridge.hpp"
+#include "Emb.hpp"
 
 #include "turtleModuleLib/GlobalFunctions.hpp"
 
 #include <QDebug>
 #include <QtConcurrentRun>
 #include <QTimer>
+#include <QTcpServer>
+#include <QDateTime>
 
 #include <Python.h>
 
@@ -44,6 +47,7 @@ PythonBridge::PythonBridge(QObject *parent)
     _instance = this;
 
     PyImport_AppendInittab("qturtle", &PythonBridge::initModule);
+    PyImport_AppendInittab("emb", emb::PyInit_emb);
     Py_Initialize();
     PyEval_SetTrace(&PythonBridge::trace, nullptr);
 
@@ -51,6 +55,10 @@ PythonBridge::PythonBridge(QObject *parent)
     _exception = PyErr_NewException("__main__.ScriptBreakException", NULL, NULL);
 
     connect(&_scriptResult, SIGNAL(finished()), SLOT(scriptCompleted()));
+
+    // redirect stdout
+    PyImport_ImportModule("emb");
+    emb::set_stdout([this](const std::string& s){onPrint(s);});
 }
 
 PythonBridge::~PythonBridge()
@@ -130,6 +138,10 @@ void PythonBridge::lineExecuted(int line)
     Q_EMIT currentLineChanged(line);
 }
 
+void PythonBridge::onPrintInMain(const QString& s)
+{
+    Q_EMIT stdoutData(s);
+}
 
 PyObject* PythonBridge::initModule()
 {
@@ -187,6 +199,12 @@ PyObject* PythonBridge::runScript(QString code)
     PyObject* res = PyRun_String(code.toAscii(), Py_file_input, globals, globals);
 
     return res;
+}
+
+void PythonBridge::onPrint(const std::string &data)
+{
+    QMetaObject::invokeMethod(
+        this, "onPrintInMain", Qt::QueuedConnection, Q_ARG(QString, QString::fromStdString(data)));
 }
 
 
