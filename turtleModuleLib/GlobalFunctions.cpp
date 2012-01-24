@@ -111,7 +111,7 @@ static PyMethodDef qturtleMethods[] = {
         "Set the orientation of the turtle to to_angle."},
     {"seth", setheading_global,  METH_VARARGS,
         "Set the orientation of the turtle to to_angle."},
-    {"seth", heading_global,  METH_VARARGS,
+    {"heading", heading_global,  METH_VARARGS,
         "Return the turtle’s current heading."},
 
     {NULL, NULL, 0, NULL}        /* Sentinel */

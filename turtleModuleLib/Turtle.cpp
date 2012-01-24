@@ -6,13 +6,15 @@
 #include <QMutexLocker>
 #include <QApplication>
 #include <QDebug>
+#include <QTransform>
 
 #include <cmath>
 
 namespace TurtleModule
 {
 
-static const double TWOPI = 3.14159*2.0;
+static const double PI = 3.14159;
+static const double TWOPI = PI*2.0;
 
 static QPolygonF circle(unsigned int segments, double radius)
 {
@@ -213,7 +215,8 @@ void Turtle::setBrush(const QBrush &brush)
 
 void Turtle::forward(double steps)
 {
-    goTo(_position + QPointF(steps*std::sin(_rotationRadians), steps*std::cos(_rotationRadians)));
+    QPointF to = _position + QTransform().rotateRadians(_rotationRadians).map(QPointF(0, steps));
+    goTo(to);
 }
 
 void Turtle::goTo(const QPointF &target)
@@ -252,7 +255,13 @@ void Turtle::left(double angle)
 {
     QMutexLocker l(&_mutex);
     // TODO implement animation
-    _rotationRadians += _screen->rotationMultiplier() * angle*TWOPI/_fullcircle;
+    _rotationRadians -= angle*TWOPI/_fullcircle;
+
+    while(_rotationRadians > PI)
+        _rotationRadians -= TWOPI;
+    while(_rotationRadians < -PI)
+        _rotationRadians += TWOPI;
+
     setRotation(rotationDegrees());
 }
 
@@ -280,7 +289,9 @@ double Turtle::heading()
 {
     QMutexLocker l(&_mutex);
 
-    return _rotationRadians * _fullcircle / TWOPI;
+
+
+    return (_rotationRadians-_screen->neutralRotationRadians()*_screen->rotationMultiplier()) * _fullcircle / TWOPI;
 }
 
 

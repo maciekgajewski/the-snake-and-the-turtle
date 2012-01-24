@@ -23,14 +23,17 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include <QPointer>
+
+
+namespace Turtle {
 
 namespace Ui {
     class MainWindow;
 }
 
-namespace Turtle {
-
 class PythonBridge;
+class LibraryBrowser;
 
 class MainWindow : public QMainWindow
 {
@@ -44,6 +47,7 @@ private Q_SLOTS:
     void lineAboutToBeExecuted(int line);
     void scriptEnded();
     void scriptError(int line, const QString& text);
+    void loadFile(const QString& path);
 
     void on_startButton_clicked();
     void on_executeAllButton_clicked();
@@ -51,6 +55,7 @@ private Q_SLOTS:
     void on_mButtonNew_clicked();
     void on_interruptButton_clicked();
     void on_executeAllFastButton_clicked();
+    void on_examplesButton_clicked();
 
 protected:
 
@@ -58,11 +63,15 @@ protected:
 
 private:
 
+    void startScript(bool fast, bool all);
+
     Ui::MainWindow *ui;
     PythonBridge* _python;
 
     bool _executeAll;
     bool _executeFast;
+
+    QPointer<LibraryBrowser> _examplesBrowser;
 };
 
 }

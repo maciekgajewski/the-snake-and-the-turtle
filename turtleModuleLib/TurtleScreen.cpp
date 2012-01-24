@@ -26,6 +26,8 @@
 
 namespace TurtleModule {
 
+static const double PI = 3.14159;
+
 TurtleScreen::TurtleScreen(QWidget *parent) :
     QGraphicsView( parent),
 
@@ -56,17 +58,17 @@ TurtleScreen::Mode TurtleScreen::mode()
 double TurtleScreen::neutralRotationRadians() const
 {
     if (_mode == MODE_LOGO)
-        return 0;
+        return PI;
     else
-        return -3.14159/2;
+        return -PI/2;
 }
 
 double TurtleScreen::rotationMultiplier() const
 {
     if (_mode == MODE_LOGO)
-        return -1.0;
-    else
         return 1.0;
+    else
+        return -1.0;
 }
 
 Turtle *TurtleScreen::turtle() const

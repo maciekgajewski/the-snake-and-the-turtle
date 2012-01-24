@@ -22,6 +22,7 @@
 #include "gui/ui_MainWindow.h"
 
 #include "gui/PythonBridge.hpp"
+#include "gui/LibraryBrowser.hpp"
 
 #include "turtleModuleLib/Module.hpp"
 
@@ -61,44 +62,46 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     // TODO remove if not used
 }
 
-
-void MainWindow::on_startButton_clicked()
+void MainWindow::startScript(bool fast, bool all)
 {
+    _executeAll = all;
+    _executeFast = fast;
+
+    ui->consoleOutput->clear();
     ui->executeAllButton->setEnabled(false);
     ui->interruptButton->setEnabled(true);
     ui->startButton->setEnabled(false);
     ui->codeEditor->clearMarkers();
 
     QString code = ui->codeEditor->toPlainText();
-    _executeAll = false;
-    _executeFast = false;
     _python->executeScript(code);
+}
+
+
+void MainWindow::on_startButton_clicked()
+{
+    startScript(false, false);
 }
 
 void MainWindow::on_executeAllButton_clicked()
 {
-    ui->executeAllButton->setEnabled(false);
-    ui->startButton->setEnabled(false);
-    ui->interruptButton->setEnabled(true);
-    ui->codeEditor->clearMarkers();
-
-    QString code = ui->codeEditor->toPlainText();
-    _executeAll = true;
-    _executeFast = false;
-    _python->executeScript(code);
+    startScript(false, true);
 }
 
 void MainWindow::on_executeAllFastButton_clicked()
 {
-    ui->executeAllButton->setEnabled(false);
-    ui->interruptButton->setEnabled(true);
-    ui->startButton->setEnabled(false);
-    ui->codeEditor->clearMarkers();
+    startScript(true, true);
+}
 
-    QString code = ui->codeEditor->toPlainText();
-    _executeAll = true;
-    _executeFast = true;
-    _python->executeScript(code);
+void MainWindow::on_examplesButton_clicked()
+{
+    if (!_examplesBrowser)
+    {
+        _examplesBrowser = new LibraryBrowser();
+        connect(_examplesBrowser, SIGNAL(fileSelected(QString)), SLOT(loadFile(QString)));
+    }
+
+    _examplesBrowser->show();
 }
 
 void MainWindow::lineAboutToBeExecuted(int line)
@@ -137,7 +140,15 @@ void MainWindow::scriptError(int line, const QString &text)
     QMessageBox::critical(
         this,
         tr("Program error"),
-        text);
+                text);
+}
+
+void MainWindow::loadFile(const QString &path)
+{
+    QFile file(path);
+    file.open(QFile::ReadOnly);
+
+    ui->codeEditor->setPlainText(file.readAll());
 }
 
 void MainWindow::on_stepButton_clicked()
