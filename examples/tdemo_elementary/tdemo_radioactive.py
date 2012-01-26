@@ -12,7 +12,7 @@ follow each and every action of the turtle.
 Be patient!
 """
 
-from turtle import *
+from qturtle import *
 
 def square(length):
     for i in range(4):

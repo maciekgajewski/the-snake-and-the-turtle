@@ -64,7 +64,7 @@ void Turtle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 
 QRectF Turtle::boundingRect() const
 {
-    return _shape.boundingRect().adjusted(_pen.widthF(), _pen.widthF(), _pen.widthF(), _pen.widthF());
+    return _shape.boundingRect().adjusted(-_pen.widthF(), -_pen.widthF(), _pen.widthF(), _pen.widthF());
 }
 
 bool Turtle::isvisible()
@@ -145,6 +145,8 @@ void Turtle::reset()
     setTransform(QTransform());
     _isdown = true;
     _fullcircle = 360.0;
+    _filling = false;
+    _filledShape.clear();
 
     setPos(_position);
     setRotation(rotationDegrees());
@@ -202,6 +204,7 @@ void Turtle::setPen(const QPen &pen)
 {
     prepareGeometryChange();
     _pen = pen;
+    update();
     QApplication::processEvents();
 }
 
@@ -209,13 +212,14 @@ void Turtle::setBrush(const QBrush &brush)
 {
     prepareGeometryChange();
     _brush = brush;
+    update();
     QApplication::processEvents();
 
 }
 
 void Turtle::forward(double steps)
 {
-    QPointF to = _position + QTransform().rotateRadians(_rotationRadians).map(QPointF(0, steps));
+    QPointF to = _position + QTransform().scale(1,-1).rotateRadians(_rotationRadians).map(QPointF(0, steps));
     goTo(to);
 }
 
@@ -233,7 +237,11 @@ void Turtle::goTo(const QPointF &target)
         _drawing.append(item);
     }
     _position = target;
+    if (_filling)
+        _filledShape.append(_position);
+    prepareGeometryChange();
     setPos(_position);
+    QApplication::processEvents();
 }
 
 int Turtle::stamp()
@@ -248,6 +256,7 @@ int Turtle::stamp()
     item->setTransform(transform());
 
     _drawing.append(item);
+    QApplication::processEvents();
     return _drawing.size() - 1; // stamp-id is an index in the _drawing
 }
 
@@ -270,6 +279,26 @@ void Turtle::setheading(double angle)
     // TODO implement animation
     _rotationRadians = _screen->neutralRotationRadians() +  _screen->rotationMultiplier() *angle*TWOPI/_fullcircle;
     setRotation(rotationDegrees());
+}
+
+void Turtle::beginFill()
+{
+    _filling = true;
+    _filledShape.clear();
+    _filledShape.append(_position);
+}
+
+void Turtle::endFill()
+{
+    _filling = false;
+    QGraphicsPolygonItem* filledShape = new QGraphicsPolygonItem(_filledShape, 0, scene());
+    filledShape->setZValue(-1);
+    filledShape->setBrush(_brush);
+    filledShape->setPen(Qt::NoPen);
+
+    _drawing.append(filledShape);
+
+    QApplication::processEvents();
 }
 
 QString Turtle::turtleshape()

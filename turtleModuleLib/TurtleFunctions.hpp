@@ -45,6 +45,9 @@ PyObject* left_global(PyObject *self, PyObject *args);
 PyObject* right_global(PyObject *self, PyObject *args);
 PyObject* setheading_global(PyObject *self, PyObject *args);
 PyObject* heading_global(PyObject *self, PyObject *args);
+PyObject* width_global(PyObject *self, PyObject *args);
+PyObject* begin_fill_global(PyObject *self, PyObject *args);
+PyObject* end_fill_global(PyObject *self, PyObject *args);
 
 
 

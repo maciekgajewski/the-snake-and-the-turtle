@@ -38,6 +38,9 @@ EditorWidget::EditorWidget(QWidget *parent) :
     _sidebar = new SidebarWidget(this);
 
     setViewportMargins(sidebarWidth()+2, 0, 0, 0);
+
+    connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateSidebar(QRect,int)));
+
     new PythonHighlighter(document());
 }
 
@@ -45,12 +48,14 @@ void EditorWidget::setCurrentlyExecutedLine(int line)
 {
     _currentLine = line;
     _sidebar->update();
+    ensureLineVisible(line);
 }
 
 void EditorWidget::setErrorLine(int line)
 {
     _errorLine = line;
     _sidebar->update();
+    ensureLineVisible(line);
 }
 
 void EditorWidget::clearMarkers()
@@ -67,7 +72,6 @@ void EditorWidget::resizeEvent(QResizeEvent *e)
     _sidebar->setGeometry(QRect(cr.left(), cr.top(), sidebarWidth(), cr.height()));
 
     setViewportMargins(sidebarWidth()+2, 0, 0, 0);
-
 }
 
 void EditorWidget::keyPressEvent(QKeyEvent *e)
@@ -129,6 +133,26 @@ void EditorWidget::sidebarPaintEvent(QPaintEvent *event)
         painter.setBrush(Qt::red);
         painter.drawRect(marker);
     }
+}
+
+void EditorWidget::updateSidebar(const QRect &rect, int dy)
+ {
+     if (dy)
+         _sidebar->scroll(0, dy);
+     else
+         _sidebar->update(0, rect.y(), _sidebar->width(), rect.height());
+
+//     if (rect.contains(viewport()->rect()))
+//         updateLineNumberAreaWidth(0);
+}
+
+void EditorWidget::ensureLineVisible(int line)
+{
+    QTextCursor cursor = textCursor();
+    QTextBlock block = document()->findBlockByLineNumber(line);
+    cursor.setPosition(block.position());
+    setTextCursor(cursor);
+    ensureCursorVisible();
 }
 
 bool EditorWidget::handleTab(Qt::KeyboardModifiers modifiers)

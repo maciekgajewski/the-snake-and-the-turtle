@@ -65,6 +65,8 @@ public Q_SLOTS:
     int stamp();
     void left(double angle);
     void setheading(double angle);
+    void beginFill();
+    void endFill();
 
 private:
 
@@ -85,6 +87,9 @@ private:
 
     QPolygonF _shape;
     QString _shapename;
+
+    QPolygonF _filledShape;
+    bool _filling;
 
     static PolygonDictionary _shapes;
 

@@ -319,5 +319,42 @@ PyObject* heading_global(PyObject *self, PyObject *args)
     return heading(getTurtle());
 }
 
+static PyObject* width(Turtle* t, PyObject *args)
+{
+    if (t)
+    {
+        double w = -1;
+        if(PyArg_ParseTuple(args, "|d", &w))
+        {
+            QPen pen = t->pen();
+            if (w >= 0)
+            {
+                pen.setWidthF(w);
+                return invoke1(t, "setPen", Q_ARG(QPen, pen));
+            }
+            else
+            {
+                return PyFloat_FromDouble(pen.widthF());
+            }
+        }
+    }
+    return NULL;
+}
+
+PyObject* width_global(PyObject *self, PyObject *args)
+{
+    return width(getTurtle(),args);
+}
+
+PyObject* begin_fill_global(PyObject *self, PyObject *args)
+{
+    return invoke0(getTurtle(), "beginFill");
+}
+
+PyObject* end_fill_global(PyObject *self, PyObject *args)
+{
+    return invoke0(getTurtle(), "endFill");
+}
+
 
 } // namespace TurtleModule

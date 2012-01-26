@@ -94,8 +94,11 @@ void PythonBridge::reset()
 
 void PythonBridge::stop()
 {
-    QMutexLocker l(&_mutex);
-    _stop = true;
+    {
+        QMutexLocker l(&_mutex);
+        _stop = true;
+    }
+    _wait.wakeAll();
 }
 
 void PythonBridge::scriptCompleted()

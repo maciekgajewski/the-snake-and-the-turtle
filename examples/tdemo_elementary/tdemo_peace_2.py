@@ -14,14 +14,14 @@ Intentionally no variables are used except for the
 colorloop:
 """
 
-from turtle import *
+from qturtle import *
 
 F = 1.32
 
 def main():
-    peacecolors = ("red3",  "orange", "yellow",
-                   "seagreen4", "orchid4",
-                   "royalblue1", "dodgerblue4")
+    peacecolors = ("red",  "orange", "yellow",
+                   "green", "magenta",
+                   "blue", "darkCyan")
     reset()
     up()
     goto(-320*F,-195*F)
@@ -58,7 +58,7 @@ def main():
     forward(170*F)
     up()
 
-    goto(0,300*F) # vanish if hideturtle() is not available ;-)
+    hideturtle()
     return "Done!!"
 
 if __name__ == "__main__":

@@ -48,6 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // embedd module
     TurtleModule::Module::initialiseEmbedded(ui->sceneContainer);
+
+    setWindowState(Qt::WindowMaximized);
 }
 
 MainWindow::~MainWindow()

@@ -45,12 +45,17 @@ protected:
     virtual void resizeEvent(QResizeEvent *e);
     virtual void keyPressEvent(QKeyEvent *e);
 
+private Q_SLOTS:
+
+    void updateSidebar(const QRect &rect, int dy);
+
 private:
 
     friend class SidebarWidget;
 
     int sidebarWidth() const;
     void sidebarPaintEvent(QPaintEvent *event);
+    void ensureLineVisible(int line);
 
     // keyboard support
     bool handleTab(Qt::KeyboardModifiers modifiers); // handle tab press, return true if handled
