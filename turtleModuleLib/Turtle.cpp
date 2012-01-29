@@ -246,6 +246,7 @@ void Turtle::goTo(const QPointF &target)
 
 void Turtle::circle(double radius, double extent, unsigned int steps)
 {
+    qDebug() << "circle begin";
     // calculate extent
     if (extent == 0)
         extent = _fullcircle;
@@ -255,15 +256,17 @@ void Turtle::circle(double radius, double extent, unsigned int steps)
         steps = 36; // TODO make it depending on radius and extent
 
     // calculate move components
-    double leftAngle = extent/steps;
-    double stepsForward = radius * std::sin(angleToRadians(leftAngle));
+    double leftAngle = (radius/std::abs(radius)) * std::abs(extent)/steps;
+    double stepsForward = std::abs(radius * std::sin(angleToRadians(leftAngle)));
 
     // draw!
     for (unsigned int i = 0; i < steps; ++i)
     {
-        left(leftAngle);
+        left(leftAngle/2);
         forward(stepsForward);
+        left(leftAngle/2);
     }
+    qDebug() << "circle end";
 }
 
 int Turtle::stamp()
@@ -321,6 +324,12 @@ void Turtle::endFill()
     _drawing.append(filledShape);
 
     QApplication::processEvents();
+}
+
+void Turtle::home()
+{
+    goTo(QPointF(0,0));
+    setheading(0);
 }
 
 double Turtle::angleToRadians(double angle)

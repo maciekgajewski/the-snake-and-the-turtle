@@ -23,8 +23,8 @@
 
 #include <QObject>
 #include <QFutureWatcher>
-#include <QWaitCondition>
 #include <QTcpSocket>
+#include <QSemaphore>
 
 #include <Python.h>
 #include <frameobject.h>
@@ -77,8 +77,8 @@ private:
     static bool _stop; // intra-thread stop flag
     static PyObject* _exception;
 
+    QSemaphore _semaphore;
     QMutex _mutex;
-    QWaitCondition _wait;
 };
 
 } // namespace Turtle

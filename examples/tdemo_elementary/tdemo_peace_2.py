@@ -18,49 +18,45 @@ from qturtle import *
 
 F = 1.32
 
-def main():
-    peacecolors = ("red",  "orange", "yellow",
-                   "green", "magenta",
-                   "blue", "darkCyan")
-    reset()
-    up()
-    goto(-320*F,-195*F)
-    width(70*F)
+peacecolors = ("red",  "orange", "yellow",
+			   "green", "magenta",
+			   "blue", "darkCyan")
+reset()
+up()
+goto(-320*F,-195*F)
+width(70*F)
 
-    for pcolor in peacecolors:
-        color(pcolor)
-        down()
-        forward(640*F)
-        up()
-        backward(640*F)
-        left(90)
-        forward(66*F)
-        right(90)
+for pcolor in peacecolors:
+	color(pcolor)
+	down()
+	forward(640*F)
+	up()
+	backward(640*F)
+	left(90)
+	forward(66*F)
+	right(90)
 
-    width(25*F)
-    color("white")
-    goto(0,-170*F)
-    down()
+width(25*F)
+color("white")
+goto(0,-170*F)
+down()
 
-    circle(170*F)
-    left(90)
-    forward(340*F)
-    up()
-    left(180)
-    forward(170*F)
-    right(45)
-    down()
-    forward(170*F)
-    up()
-    backward(170*F)
-    left(90)
-    down()
-    forward(170*F)
-    up()
+circle(170*F)
+left(90)
+forward(340*F)
+up()
+left(180)
+forward(170*F)
+right(45)
+down()
+forward(170*F)
+up()
+backward(170*F)
+left(90)
+down()
+forward(170*F)
+up()
 
-    hideturtle()
-    return "Done!!"
+hideturtle()
 
-if __name__ == "__main__":
-    main()
-    mainloop()
+mainloop()

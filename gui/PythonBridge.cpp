@@ -41,7 +41,9 @@ PyObject* PythonBridge::_exception = nullptr;
 bool PythonBridge::_stop = false;
 
 PythonBridge::PythonBridge(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+
+    _semaphore(1)
 {
     Q_ASSERT(!_instance);
     _instance = this;
@@ -85,7 +87,7 @@ void PythonBridge::executeScript(const QString& script)
 void PythonBridge::step()
 {
     qDebug() << "step, wake all";
-    _wait.wakeAll();
+    _semaphore.release(1);
 }
 
 void PythonBridge::reset()
@@ -100,7 +102,7 @@ void PythonBridge::stop()
         _stop = true;
     }
     qDebug() << "stop, wake all";
-    _wait.wakeAll();
+    _semaphore.release(1);
 }
 
 void PythonBridge::scriptCompleted()
@@ -187,12 +189,11 @@ int PythonBridge::trace(PyObject *obj, PyFrameObject *frame, int what, PyObject 
     if (what == PyTrace_LINE)
     {
         int lineNum = PyFrame_GetLineNumber(frame);
-        QMetaObject::invokeMethod(_instance, "lineExecuted", Qt::QueuedConnection, Q_ARG(int, lineNum));
 
         // wait for the green light
-        _instance->_mutex.lock();
+        QMetaObject::invokeMethod(_instance, "lineExecuted", Qt::QueuedConnection, Q_ARG(int, lineNum));
         qDebug() << "trace, blocking thread, line" << lineNum;
-        _instance->_wait.wait(&_instance->_mutex);
+        _instance->_semaphore.acquire(1); // re-acquiring semaphore
         qDebug() << "unlocked";
         _instance->_mutex.unlock();
     }
@@ -202,9 +203,15 @@ int PythonBridge::trace(PyObject *obj, PyFrameObject *frame, int what, PyObject 
 
 PyObject* PythonBridge::runScript(QString code)
 {
+    qDebug() << "Script starting, qcquiring semaphore";
+    _instance->_semaphore.acquire(1);
+
     PyObject* mainModule = PyImport_AddModule("__main__");
     PyObject* globals = PyModule_GetDict(mainModule);
     PyObject* res = PyRun_String(code.toAscii(), Py_file_input, globals, globals);
+
+    qDebug() << "Script ended, releasing semaphore";
+    _instance->_semaphore.release(1);
 
     return res;
 }

@@ -95,11 +95,11 @@ static PyMethodDef qturtleMethods[] = {
         "Move the turtle forward by the specified distance, in the direction the turtle is headed."},
     {"fd", forward_global,  METH_VARARGS,
         "Move the turtle forward by the specified distance, in the direction the turtle is headed."},
-    {"backward", forward_global,  METH_VARARGS,
+    {"backward", backward_global,  METH_VARARGS,
         "Move the turtle backward by the specified distance, in the direction the turtle is headed."},
-    {"back", forward_global,  METH_VARARGS,
+    {"back", backward_global,  METH_VARARGS,
         "Move the turtle backward by the specified distance, in the direction the turtle is headed."},
-    {"bk", forward_global,  METH_VARARGS,
+    {"bk", backward_global,  METH_VARARGS,
         "Move the turtle backward by the specified distance, in the direction the turtle is headed."},
     {"stamp", stamp_global,  METH_VARARGS,
         "Stamp a copy of the turtle shape onto the canvas at the current turtle position."},
@@ -129,6 +129,8 @@ static PyMethodDef qturtleMethods[] = {
         "Fill the shape drawn after the last call to begin_fill()."},
     {"circle", (PyCFunction)circle_global,  METH_VARARGS | METH_KEYWORDS,
         "Draw a circle with given radius."},
+    {"home", home_global,  METH_NOARGS,
+        "Move turtle to the origin – coordinates (0,0) – and set its heading to its start-orientation."},
 
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };

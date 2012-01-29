@@ -151,6 +151,7 @@ void MainWindow::loadFile(const QString &path)
     file.open(QFile::ReadOnly);
 
     ui->codeEditor->setPlainText(file.readAll());
+    _python->reset();
 }
 
 void MainWindow::on_stepButton_clicked()

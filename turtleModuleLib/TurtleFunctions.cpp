@@ -368,7 +368,7 @@ static PyObject* circle(Turtle* t, PyObject *args, PyObject* keywords)
         unsigned int steps = 0;
         if (PyArg_ParseTupleAndKeywords(args, keywords, "d|dI", kwlist, &radius, &extent, &steps))
         {
-            return invoke(t, "circle", Q_ARG(double,radius), Q_ARG(double,extent), Q_ARG(unsigned int,steps));
+            return invokeWait(t, "circle", Q_ARG(double,radius), Q_ARG(double,extent), Q_ARG(unsigned int,steps));
         }
     }
 
@@ -379,5 +379,11 @@ PyObject* circle_global(PyObject *self, PyObject *args, PyObject* keywords)
 {
     return circle(getTurtle(), args, keywords);
 }
+
+PyObject* home_global(PyObject *self, PyObject *args)
+{
+    return invoke(getTurtle(), "home");
+}
+
 
 } // namespace TurtleModule

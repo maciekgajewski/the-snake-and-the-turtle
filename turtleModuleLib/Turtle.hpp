@@ -68,6 +68,7 @@ public Q_SLOTS:
     void setheading(double angle);
     void beginFill();
     void endFill();
+    void home();
 
 private:
 

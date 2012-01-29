@@ -49,6 +49,7 @@ PyObject* width_global(PyObject *self, PyObject *args);
 PyObject* begin_fill_global(PyObject *self, PyObject *args);
 PyObject* end_fill_global(PyObject *self, PyObject *args);
 PyObject* circle_global(PyObject *self, PyObject *args, PyObject* keywords);
+PyObject* home_global(PyObject *self, PyObject *args);
 
 
 
