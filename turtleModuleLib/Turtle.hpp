@@ -69,6 +69,7 @@ public Q_SLOTS:
     void beginFill();
     void endFill();
     void home();
+    void dot(double diameter);
 
 private:
 

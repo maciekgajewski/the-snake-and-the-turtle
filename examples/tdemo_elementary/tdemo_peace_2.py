@@ -18,9 +18,9 @@ from qturtle import *
 
 F = 1.32
 
-peacecolors = ("red",  "orange", "yellow",
-			   "green", "magenta",
-			   "blue", "darkCyan")
+peacecolors = ("red3",  "orange", "yellow",
+			   "seagreen4", "orchid4",
+			   "royalblue1", "dodgerblue4")
 reset()
 up()
 goto(-320*F,-195*F)

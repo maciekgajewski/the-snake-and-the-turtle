@@ -141,6 +141,7 @@ void TurtleScreen::reset()
 
     _scene = new QGraphicsScene(this);
     setScene(_scene);
+    _bgcolor = Qt::white;
     _scene->setBackgroundBrush(_bgcolor);
 
     _turtles.append(new Turtle(this));

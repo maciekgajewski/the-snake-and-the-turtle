@@ -158,17 +158,18 @@ static PyObject* pencolor(Turtle* t, PyObject *args)
 {
     if (t)
     {
-        QColor c = argsToColor(args);
-        QPen p = t->pen();
-        if (c.isValid())
-        {
-            p.setColor(c);
-            return invoke(t, "setPen", Q_ARG(QPen, p));
-        }
-        else
-        {
-            return colorToTuple(p.color());
-        }
+        PyObject* o = PyTuple_GetItem(args, 0);
+            QColor c = objectToColor(o);
+            QPen p = t->pen();
+            if (c.isValid())
+            {
+                p.setColor(c);
+                return invoke(t, "setPen", Q_ARG(QPen, p));
+            }
+            else
+            {
+                return colorToTuple(p.color());
+            }
     }
 
     return NULL;
@@ -183,17 +184,18 @@ static PyObject* fillcolor(Turtle* t, PyObject *args)
 {
     if (t)
     {
-        QColor c = argsToColor(args);
-        QBrush b = t->brush();
-        if (c.isValid())
-        {
-            b.setColor(c);
-            return invoke(t, "setBrush", Q_ARG(QBrush, b));
-        }
-        else
-        {
-            return colorToTuple(b.color());
-        }
+        PyObject* o = PyTuple_GetItem(args, 0);
+            QColor c = objectToColor(o);
+            QBrush b = t->brush();
+            if (c.isValid())
+            {
+                b.setColor(c);
+                return invoke(t, "setBrush", Q_ARG(QBrush, b));
+            }
+            else
+            {
+                return colorToTuple(b.color());
+            }
     }
 
     return NULL;
@@ -204,10 +206,45 @@ PyObject* fillcolor_global(PyObject */*self*/, PyObject *args)
     return fillcolor(getTurtle(), args);
 }
 
+static PyObject* color(Turtle* t, PyObject *args)
+{
+    if (t)
+    {
+        QColor penColor;
+        QColor fillColor;
+
+        PyObject* o1 = PyTuple_GetItem(args, 0);
+        PyObject* o2 = PyTuple_GetItem(args, 1);;
+        PyErr_Clear();
+
+            penColor = objectToColor(o1);
+            fillColor = objectToColor(o2);
+            QPen pen = t->pen();
+            QBrush brush = t->brush();
+
+            if (penColor.isValid())
+            {
+                pen.setColor(penColor);
+                invoke(t, "setPen", Q_ARG(QPen, pen));
+            }
+            if (!fillColor.isValid())
+                fillColor = penColor;
+            if (fillColor.isValid())
+            {
+                brush.setColor(fillColor);
+                invoke(t, "setBrush", Q_ARG(QBrush, brush));
+            }
+
+        if (PyErr_Occurred() == NULL)
+            Py_RETURN_NONE;
+    }
+
+    return NULL;
+}
+
 PyObject* color_global(PyObject *self, PyObject *args)
 {
-    // TODO handle both colors
-    return pencolor_global(self, args);
+    return color(getTurtle(), args);
 }
 
 static PyObject* forward(Turtle* t, PyObject* args, double mply)
@@ -383,6 +420,30 @@ PyObject* circle_global(PyObject *self, PyObject *args, PyObject* keywords)
 PyObject* home_global(PyObject *self, PyObject *args)
 {
     return invoke(getTurtle(), "home");
+}
+
+static PyObject* dot(Turtle* t, PyObject *args)
+{
+    if(t)
+    {
+        double size = 0;
+        if (PyArg_ParseTuple(args, "|d", &size))
+        {
+            if (size <= 0.0)
+            {
+                double pensize = t->pen().widthF();
+                size = std::max(pensize * 2, pensize + 4);
+            }
+            return invoke(t, "dot", Q_ARG(double, size));
+        }
+    }
+
+    return NULL;
+}
+
+PyObject* dot_global(PyObject *self, PyObject *args)
+{
+    return dot(getTurtle(), args);
 }
 
 

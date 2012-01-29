@@ -68,25 +68,26 @@ static PyObject* bgcolor(TurtleScreen* s, PyObject *args)
 {
     if (s)
     {
-        if (PySequence_Length(args) == 0)
-        {
-            qDebug() << "Parameterless bgcolor called";
-            return colorToTuple(s->bgcolor());
-        }
-        else
-        {
-            QColor color = argsToColor(args);
-            if (color.isValid())
+        PyObject* c = PyTuple_GetItem(args, 0);
+            if (c)
             {
-                qDebug() << "invoking bgcolor" << color;
-                return invoke(s, "bgcolor", Q_ARG(QColor, color));
+                QColor color = objectToColor(c);
+                if (color.isValid())
+                {
+                    qDebug() << "invoking bgcolor" << color;
+                    return invoke(s, "bgcolor", Q_ARG(QColor, color));
+                }
+                else
+                {
+                    qDebug() << "bgcolor called with invalid color";
+                    return NULL;
+                }
             }
             else
             {
-                qDebug() << "bgcolor called with invalid color";
-                return NULL;
+                qDebug() << "Parameterless bgcolor called";
+                return colorToTuple(s->bgcolor());
             }
-        }
     }
 
     return NULL;

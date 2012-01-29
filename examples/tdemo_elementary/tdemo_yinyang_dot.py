@@ -13,7 +13,7 @@ yinyang_circle.
 
 """
 
-from turtle import *
+from qturtle import *
 
 def yin(radius, color1, color2):
     width(3)
@@ -37,15 +37,10 @@ def yinyang(radius, color1, color2):
     yin(radius, color1, color2)
     yin(radius, color2, color1)
 
-def main():
-    reset()
-    speed(0)
-    hideturtle()
-    bgcolor(.4,.1,0)
-    yinyang(200, "blue", "yellow")
-    hideturtle()
-    return "Done!"
-
-if __name__ == '__main__':
-    main()
-    mainloop()
+reset()
+speed(0)
+hideturtle()
+bgcolor((.4,.1,0))
+yinyang(200, "blue", "yellow")
+hideturtle()
+mainloop()

@@ -18,9 +18,9 @@ void resetModule();
 
 // converters
 
-/// Converts function argument tuple into color. The tuple has to containe either a string or 3 integers
-/// In case of error, exception is set and invalid color is returned
-QColor argsToColor(PyObject* args);
+/// Converts python object to color.
+/// The object can be either: 3-element tuple, 4-element tuple or string
+QColor objectToColor(PyObject* obj);
 
 /// Converts color to RGB tuple
 PyObject* colorToTuple(const QColor& color);

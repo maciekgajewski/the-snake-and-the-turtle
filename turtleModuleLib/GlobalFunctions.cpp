@@ -3,6 +3,7 @@
 
 #include "Module.hpp"
 #include "TurtleScreen.hpp"
+#include "NamedColors.hpp"
 
 #include <QApplication>
 
@@ -131,6 +132,8 @@ static PyMethodDef qturtleMethods[] = {
         "Draw a circle with given radius."},
     {"home", home_global,  METH_NOARGS,
         "Move turtle to the origin – coordinates (0,0) – and set its heading to its start-orientation."},
+    {"dot", dot_global,  METH_VARARGS,
+        "Draw a circular dot with diameter size."},
 
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
@@ -155,41 +158,34 @@ PyObject* creteModule()
     return m;
 }
 
-QColor argsToColor(PyObject* args)
+QColor objectToColor(PyObject* o)
 {
-    // try string format
-    char* colorName = nullptr;
-    unsigned char r, g, b;
-    unsigned char a = 255;
-
-    if (PyArg_ParseTuple(args, "s", &colorName))
-    {
-        if (QColor::isValidColor(QString::fromUtf8(colorName)))
-        {
-            return QColor(colorName);
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, "invalid color name");
-            return QColor();
-        }
-    }
-    else if (PyArg_ParseTuple(args, "(bbb)", &r, &g, &b))
-    {
-        PyErr_Clear();
-        return QColor((int)r, (int)g, (int)b, (int)a);
-    }
-    else if (PyArg_ParseTuple(args, "(bbbb)", &r, &g, &b, &a))
-    {
-        PyErr_Clear();
-        return QColor((int)r, (int)g, (int)b, (int)a);
-    }
-    else
-    {
-        PyErr_Clear();
-        PyErr_SetString(PyExc_RuntimeError, "Color has to be specified either as valid color name or 3 or 4 element tuple");
+    if (!o)
         return QColor();
+    else if (PyUnicode_Check(o))
+    {
+        Py_UNICODE* data = PyUnicodeUCS2_AsUnicode(o);
+        QString s = QString::fromWCharArray(data);
+        return nameToColor(s);
     }
+    else if (PyTuple_Check(o))
+    {
+        double r, g, b;
+
+        if (PyTuple_Size(o) < 3)
+            return QColor();
+
+        r = PyFloat_AsDouble(PyTuple_GET_ITEM(o, 0));
+        g = PyFloat_AsDouble(PyTuple_GET_ITEM(o, 1));
+        b = PyFloat_AsDouble(PyTuple_GET_ITEM(o, 2));
+
+        if (r < 1.0 && g < 1.0 && b < 1.0)
+            return QColor::fromRgbF(r, g, b);
+        else
+            return QColor((int)r, (int)g, (int)b);
+    }
+
+    return QColor();
 }
 
 PyObject* colorToTuple(const QColor& color)

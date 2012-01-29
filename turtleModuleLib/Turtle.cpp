@@ -332,6 +332,21 @@ void Turtle::home()
     setheading(0);
 }
 
+void Turtle::dot(double diameter)
+{
+    QMutexLocker l(&_mutex);
+
+    QRectF ellipse(_position.x() - diameter/2, _position.y() - diameter/2, diameter, diameter);
+    QGraphicsEllipseItem* dot = new QGraphicsEllipseItem(ellipse, 0, scene());
+    dot->setPen(Qt::NoPen);
+    dot->setBrush(_pen.color());
+
+    _drawing.append(dot);
+
+    QApplication::processEvents();
+
+}
+
 double Turtle::angleToRadians(double angle)
 {
     return TWOPI * angle / _fullcircle;

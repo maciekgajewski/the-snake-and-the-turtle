@@ -11,7 +11,7 @@ command.
 
 """
 
-from turtle import *
+from qturtle import *
 
 def yin(radius, color1, color2):
     width(3)
@@ -37,13 +37,8 @@ def yin(radius, color1, color2):
     down()
     left(90)
 
-def main():
-    reset()
-    yin(200, "red", "green")
-    yin(200, "green", "red")
-    ht()
-    return "Done!"
-
-if __name__ == '__main__':
-    main()
-    mainloop()
+reset()
+yin(200, "red", "green")
+yin(200, "green", "red")
+hideturtle()
+mainloop()
