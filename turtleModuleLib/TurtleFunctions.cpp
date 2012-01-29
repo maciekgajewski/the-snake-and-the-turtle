@@ -38,12 +38,12 @@ static Turtle* getTurtle()
 
 PyObject* showturtle_global(PyObject *self, PyObject *args)
 {
-    return invoke0(getTurtle(), "showturtle");
+    return invoke(getTurtle(), "showturtle");
 }
 
 PyObject* hideturtle_global(PyObject *self, PyObject *args)
 {
-    return invoke0(getTurtle(), "hideturtle");
+    return invoke(getTurtle(), "hideturtle");
 }
 
 PyObject* isvisible_global(PyObject *self, PyObject *args)
@@ -79,6 +79,8 @@ static PyObject* shapesize(Turtle* t, PyObject *args)
             Py_RETURN_NONE;
         }
     }
+
+    return NULL;
 }
 
 
@@ -101,12 +103,12 @@ static PyObject* setdown(Turtle* t, bool down)
 
 PyObject* penup_global(PyObject *self, PyObject *args)
 {
-    setdown(getTurtle(), false);
+    return setdown(getTurtle(), false);
 }
 
 PyObject* pendown_global(PyObject *self, PyObject *args)
 {
-    setdown(getTurtle(), true);
+    return setdown(getTurtle(), true);
 }
 
 PyObject* isdown_global(PyObject *self, PyObject *args)
@@ -148,7 +150,7 @@ static PyObject* shape(Turtle* t, PyObject* args)
 
 PyObject* shape_global(PyObject */*self*/, PyObject *args)
 {
-    shape(getTurtle(), args);
+    return shape(getTurtle(), args);
 }
 
 
@@ -161,7 +163,7 @@ static PyObject* pencolor(Turtle* t, PyObject *args)
         if (c.isValid())
         {
             p.setColor(c);
-            return invoke1(t, "setPen", Q_ARG(QPen, p));
+            return invoke(t, "setPen", Q_ARG(QPen, p));
         }
         else
         {
@@ -186,7 +188,7 @@ static PyObject* fillcolor(Turtle* t, PyObject *args)
         if (c.isValid())
         {
             b.setColor(c);
-            return invoke1(t, "setBrush", Q_ARG(QBrush, b));
+            return invoke(t, "setBrush", Q_ARG(QBrush, b));
         }
         else
         {
@@ -205,7 +207,7 @@ PyObject* fillcolor_global(PyObject */*self*/, PyObject *args)
 PyObject* color_global(PyObject *self, PyObject *args)
 {
     // TODO handle both colors
-    pencolor_global(self, args);
+    return pencolor_global(self, args);
 }
 
 static PyObject* forward(Turtle* t, PyObject* args, double mply)
@@ -215,7 +217,7 @@ static PyObject* forward(Turtle* t, PyObject* args, double mply)
         double steps;
         if (PyArg_ParseTuple(args, "d", &steps))
         {
-            return invoke1wait(t, "forward", Q_ARG(double, steps*mply));
+            return invokeWait(t, "forward", Q_ARG(double, steps*mply));
         }
     }
 
@@ -230,7 +232,7 @@ static PyObject* goTo(Turtle* t, PyObject* args)
         if (PyArg_ParseTuple(args, "dd", &x, &y))
         {
             QPointF p(x, y);
-            return invoke1wait(t, "goTo", Q_ARG(QPointF, p));
+            return invokeWait(t, "goTo", Q_ARG(QPointF, p));
         }
     }
 
@@ -255,12 +257,12 @@ PyObject* goto_global(PyObject *self, PyObject *args)
 
 PyObject* stamp_global(PyObject *self, PyObject *args)
 {
-    return invoke0(getTurtle(), "stamp");
+    return invoke(getTurtle(), "stamp");
 }
 
 PyObject* reset_global(PyObject *self, PyObject *args)
 {
-    return invoke0(getTurtle(), "reset");
+    return invoke(getTurtle(), "reset");
 }
 
 static PyObject* left(Turtle* t, PyObject* args, double mply)
@@ -270,7 +272,7 @@ static PyObject* left(Turtle* t, PyObject* args, double mply)
         double angle;
         if (PyArg_ParseTuple(args, "d", &angle))
         {
-            return invoke1wait(t, "left", Q_ARG(double, angle*mply));
+            return invokeWait(t, "left", Q_ARG(double, angle*mply));
         }
     }
 
@@ -294,7 +296,7 @@ static PyObject* setheading(Turtle* t, PyObject* args)
         double angle;
         if(PyArg_ParseTuple(args, "d", &angle))
         {
-            return invoke1(t, "setheading", Q_ARG(double, angle));
+            return invoke(t, "setheading", Q_ARG(double, angle));
         }
     }
     return NULL;
@@ -330,7 +332,7 @@ static PyObject* width(Turtle* t, PyObject *args)
             if (w >= 0)
             {
                 pen.setWidthF(w);
-                return invoke1(t, "setPen", Q_ARG(QPen, pen));
+                return invoke(t, "setPen", Q_ARG(QPen, pen));
             }
             else
             {
@@ -348,13 +350,34 @@ PyObject* width_global(PyObject *self, PyObject *args)
 
 PyObject* begin_fill_global(PyObject *self, PyObject *args)
 {
-    return invoke0(getTurtle(), "beginFill");
+    return invoke(getTurtle(), "beginFill");
 }
 
 PyObject* end_fill_global(PyObject *self, PyObject *args)
 {
-    return invoke0(getTurtle(), "endFill");
+    return invoke(getTurtle(), "endFill");
 }
 
+static PyObject* circle(Turtle* t, PyObject *args, PyObject* keywords)
+{
+    if (t)
+    {
+        static char *kwlist[] = {"radius", "extent", "steps", NULL};
+        double radius = 0;
+        double extent = 0;
+        unsigned int steps = 0;
+        if (PyArg_ParseTupleAndKeywords(args, keywords, "d|dI", kwlist, &radius, &extent, &steps))
+        {
+            return invoke(t, "circle", Q_ARG(double,radius), Q_ARG(double,extent), Q_ARG(unsigned int,steps));
+        }
+    }
+
+    return NULL;
+}
+
+PyObject* circle_global(PyObject *self, PyObject *args, PyObject* keywords)
+{
+    return circle(getTurtle(), args, keywords);
+}
 
 } // namespace TurtleModule

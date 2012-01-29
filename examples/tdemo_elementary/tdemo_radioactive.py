@@ -42,18 +42,17 @@ def radioactive(radius1, radius2, side,
     
     begin_fill()
     square(side)
-    color(fillcol)
+    fillcolor(fillcol)
     end_fill()
     move((side/2), (side/2))
-    color(outlinecol)
+    fillcolor(outlinecol)
     right(90 + angle/2)
 
     for i in range(3):
         begin_fill()
         sector(radius1,angle)
         left(120)
-        #left((360 - 3 * angle)/3 + 60)
-        color(outlinecol)
+        fillcolor(outlinecol)
         end_fill()
 
     up()
@@ -64,7 +63,7 @@ def radioactive(radius1, radius2, side,
     color(fillcol)
     begin_fill()
     circle(radius2)
-    color(outlinecol)
+    fillcolor(outlinecol)
     end_fill()
 
     up()
@@ -72,16 +71,10 @@ def radioactive(radius1, radius2, side,
     forward(radius2)
     width(1)
 
-def main():
-    reset()
-    width(5)
-    speed(1)
-    radioactive(160, 36, 400)
-    return "Done!"
-
-if __name__ == '__main__':
-    msg = main()
-    print(msg)
-    mainloop()
-
+# program starts here
+reset()
+width(5)
+speed(1)
+radioactive(160, 36, 400)
+mainloop()
 

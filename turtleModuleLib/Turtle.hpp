@@ -62,6 +62,7 @@ public Q_SLOTS:
     void setBrush(const QBrush& brush);
     void forward(double steps);
     void goTo(const QPointF& target);
+    void circle(double radius, double extent = 0, unsigned int steps = 0);
     int stamp();
     void left(double angle);
     void setheading(double angle);
@@ -73,6 +74,8 @@ private:
     QMutex _mutex;
     QList<QGraphicsItem*> _drawing;
     TurtleScreen* _screen;
+
+    double angleToRadians(double angle); // convers external angle usnits to radians
 
     // state, available across threads
 

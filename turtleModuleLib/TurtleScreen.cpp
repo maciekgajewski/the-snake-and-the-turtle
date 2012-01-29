@@ -22,7 +22,9 @@
 #include "Turtle.hpp"
 
 #include <QApplication>
+#include <QGraphicsScene>
 #include <QDebug>
+
 
 namespace TurtleModule {
 
@@ -31,15 +33,12 @@ static const double PI = 3.14159;
 TurtleScreen::TurtleScreen(QWidget *parent) :
     QGraphicsView( parent),
 
+    _scene(nullptr),
     _bgcolor(Qt::white),
     _mode((Mode)-1)
 {
     setRenderHint(QPainter::Antialiasing);
-    setScene(&_scene);
-    _scene.setBackgroundBrush(_bgcolor);
-
-    _turtles.append(new Turtle(this));
-    _scene.addItem(_turtles[0]);
+    reset();
     mode(MODE_STANDARD);
 }
 
@@ -80,7 +79,7 @@ void TurtleScreen::bgcolor(const QColor &color)
 {
     QMutexLocker l(&_mutex);
     _bgcolor = color;
-    _scene.setBackgroundBrush(color);
+    _scene->setBackgroundBrush(color);
 
     QApplication::processEvents();
 }
@@ -136,10 +135,16 @@ void TurtleScreen::reset()
     t.scale(1.0, -1.0);
     setTransform(t);
 
-    Q_FOREACH(Turtle* t, _turtles)
-    {
-        t->reset();
-    }
+    if (_scene)
+        delete _scene; // this deletes all turtles
+    _turtles.clear();
+
+    _scene = new QGraphicsScene(this);
+    setScene(_scene);
+    _scene->setBackgroundBrush(_bgcolor);
+
+    _turtles.append(new Turtle(this));
+    _scene->addItem(_turtles[0]);
 
     QApplication::processEvents();
 }

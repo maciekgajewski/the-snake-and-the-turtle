@@ -58,7 +58,7 @@ PythonHighlighter::PythonHighlighter(QTextDocument *parent)
 
     // expresions
 
-    QRegExp stringPattern("(\".*\")|'.*'");
+    QRegExp stringPattern("(\"[^\"]*\")|'[^']*'");
     QRegExp functionPattern("\\b[A-Za-z0-9_]+(?=\\()");
     QRegExp tuplePattern("(\\((-?\\d+(\\.\\d*)?,[ ]*)+-?\\d+(\\.\\d*)?\\))|(\\[(-?\\d+(\\.\\d*)?,[ ]*)+-?\\d+(\\.\\d*)?\\])");
     QRegExp commentPattern("#.*");

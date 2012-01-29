@@ -27,11 +27,26 @@ PyObject* colorToTuple(const QColor& color);
 
 // other
 
-// cross-thread call with 1 argument
-PyObject* invoke1(QObject* obj, const char* name, QGenericArgument param);
+// Cross thread call
+PyObject* invoke(
+    QObject* obj,
+    const char* method,
+    QGenericArgument p1 = QGenericArgument(),
+    QGenericArgument p2 = QGenericArgument(),
+    QGenericArgument p3 = QGenericArgument(),
+    QGenericArgument p4 = QGenericArgument()
+    );
+
 // incokes and blocks until the method completes
-PyObject* invoke1wait(QObject* obj, const char* name, QGenericArgument param);
-PyObject* invoke0(QObject* s, const char* method);
+PyObject* invokeWait(
+    QObject* obj,
+    const char* name,
+    QGenericArgument p1 = QGenericArgument(),
+    QGenericArgument p2 = QGenericArgument(),
+    QGenericArgument p3 = QGenericArgument(),
+    QGenericArgument p4 = QGenericArgument()
+    );
+
 }
 
 #endif // TURTLEMODULE_GLOBALFUNCTIONS_HPP

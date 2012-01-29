@@ -44,14 +44,11 @@ public:
 
     void load(const QString& path);
 
-//    QStringList categories() const { QStringList(_data.keys()); }
-    QList<QString> categories() const { _data.keys(); }
-    QStringList itemsInCategory(const QString& category) const { QStringList(_data[category].keys()); }
-    const LibraryItem& item(const QString& category, const QString& item) const { _data[category][item]; }
+    QStringList categories() const { return _data.keys(); }
+    QStringList itemsInCategory(const QString& category) const { return _data[category].keys(); }
+    LibraryItem item(const QString& category, const QString& item) const { return _data[category][item]; }
 
-
-//private:
-// TODO serious issue copying QList
+private:
 
     void loadCategory(const QFileInfo& info);
     LibraryItem loadItem(const QFileInfo& info);

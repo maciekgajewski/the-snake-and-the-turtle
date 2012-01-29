@@ -17,18 +17,15 @@ LibraryBrowser::LibraryBrowser(QWidget *parent) :
     _library.load(Directories::getExamplesDirectory());
 
     // populate widget
-    QList<QString> categories = _library._data.keys();
-//    QStringList categories = _library.categories();
+    QStringList categories = _library.categories();
     Q_FOREACH(const QString& category, categories)
     {
 
         QTreeWidgetItem* categoryItem = new QTreeWidgetItem(ui->documentView, QStringList() << category);
 
-        //Q_FOREACH(const QString& libItemName, _library.itemsInCategory(category))
-        Q_FOREACH(const QString& libItemName, _library._data[category].keys())
+        Q_FOREACH(const QString& libItemName, _library.itemsInCategory(category))
         {
-            //LibraryItem libItem = _library.item(category, libItemName);
-            const LibraryItem& libItem = _library._data[category][libItemName];
+            LibraryItem libItem = _library.item(category, libItemName);
 
             QTreeWidgetItem* libItemItem = new QTreeWidgetItem(categoryItem);
             libItemItem->setText(0, libItem.name());

@@ -22,7 +22,6 @@
 #define TURTLEMODULE_TURTLESCREEN_HPP
 
 #include <QGraphicsView>
-#include <QGraphicsScene>
 #include <QMutex>
 
 namespace TurtleModule {
@@ -76,7 +75,7 @@ public Q_SLOTS:
 
 private:
 
-    QGraphicsScene _scene;
+    QGraphicsScene* _scene;
     QMutex _mutex;
     QList<Turtle*> _turtles;
 

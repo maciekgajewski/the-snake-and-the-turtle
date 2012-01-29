@@ -127,6 +127,8 @@ static PyMethodDef qturtleMethods[] = {
         "To be called just before drawing a shape to be filled."},
     {"end_fill", end_fill_global,  METH_NOARGS,
         "Fill the shape drawn after the last call to begin_fill()."},
+    {"circle", (PyCFunction)circle_global,  METH_VARARGS | METH_KEYWORDS,
+        "Draw a circle with given radius."},
 
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
@@ -198,11 +200,9 @@ void resetModule()
     Module::instance()->reset();
 }
 
-PyObject* invoke1(QObject* obj, const char* name, QGenericArgument param)
+static PyObject* invokeStatusToPyError(bool status)
 {
-    bool r = QMetaObject::invokeMethod(obj, name, Qt::QueuedConnection, param);
-    QApplication::processEvents();
-    if (r)
+    if (status)
     {
         Py_RETURN_NONE;
     }
@@ -212,35 +212,41 @@ PyObject* invoke1(QObject* obj, const char* name, QGenericArgument param)
         return NULL;
     }
 }
+
+PyObject* invoke1(QObject* obj, const char* method, QGenericArgument param)
+{
+    bool r = QMetaObject::invokeMethod(obj, method, Qt::QueuedConnection, param);
+    QApplication::processEvents();
+    return invokeStatusToPyError(r);
+}
+
+PyObject* invoke(
+        QObject* obj,
+        const char* method,
+        QGenericArgument p1,
+        QGenericArgument p2,
+        QGenericArgument p3,
+        QGenericArgument p4)
+{
+    bool r = QMetaObject::invokeMethod(obj, method, Qt::QueuedConnection, p1, p2, p3, p4);
+    QApplication::processEvents();
+    return invokeStatusToPyError(r);
+}
+
 // incokes and blocks until the method completes
-PyObject* invoke1wait(QObject* obj, const char* name, QGenericArgument param)
+PyObject* invokeWait(
+        QObject* obj,
+        const char* method,
+        QGenericArgument p1,
+        QGenericArgument p2,
+        QGenericArgument p3,
+        QGenericArgument p4)
 {
     Qt::ConnectionType ct = Module::instance()->isEmbedded() ?
         Qt::BlockingQueuedConnection : Qt::DirectConnection;
-    bool r = QMetaObject::invokeMethod(obj, name, ct, param);
+    bool r = QMetaObject::invokeMethod(obj, method, ct, p1, p2, p3, p4);
     QApplication::processEvents();
-
-    if (r)
-    {
-        Py_RETURN_NONE;
-    }
-    else
-    {
-        PyErr_SetString(PyExc_RuntimeError, "Failed to invoke method");
-        return NULL;
-    }
-}
-
-PyObject* invoke0(QObject* s, const char* method)
-{
-    if (s)
-    {
-        QMetaObject::invokeMethod(s, method, Qt::QueuedConnection);
-        QApplication::processEvents();
-        Py_RETURN_NONE;
-    }
-
-    return NULL;
+    return invokeStatusToPyError(r);
 }
 
 }

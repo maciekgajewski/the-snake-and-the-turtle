@@ -51,9 +51,7 @@ static PyObject* setup(TurtleScreen* s, PyObject *args, PyObject *keywds)
 
             QRect g(startx, starty, width, height);
             qDebug() << "invoking setup" << g;
-            QMetaObject::invokeMethod(s, "setup", Qt::QueuedConnection, Q_ARG(QRect, g));
-            QApplication::processEvents();
-            Py_RETURN_NONE;
+            return invoke(s, "setup", Q_ARG(QRect, g));
         }
     }
 
@@ -68,10 +66,6 @@ PyObject* setup_global(PyObject */*self*/, PyObject *args, PyObject* keywords)
 
 static PyObject* bgcolor(TurtleScreen* s, PyObject *args)
 {
-    char* colorName = nullptr;
-
-    int r,g,b;
-
     if (s)
     {
         if (PySequence_Length(args) == 0)
@@ -85,9 +79,7 @@ static PyObject* bgcolor(TurtleScreen* s, PyObject *args)
             if (color.isValid())
             {
                 qDebug() << "invoking bgcolor" << color;
-                QMetaObject::invokeMethod(s, "bgcolor", Qt::QueuedConnection, Q_ARG(QColor, color));
-                QApplication::processEvents();
-                Py_RETURN_NONE;
+                return invoke(s, "bgcolor", Q_ARG(QColor, color));
             }
             else
             {
@@ -145,8 +137,7 @@ static PyObject* mode(TurtleScreen* s, PyObject *args, PyObject *keywds)
                 }
 
                 qDebug() << "Setting mode to " << newMode;
-                QMetaObject::invokeMethod(s, "mode", Qt::QueuedConnection, Q_ARG(int, newMode));
-                Py_RETURN_NONE;
+                return invoke(s, "mode", Q_ARG(int, newMode));
             }
         }
     }
@@ -168,9 +159,7 @@ static PyObject* setworldcoordinates(TurtleScreen* s, PyObject *args)
         if (PyArg_ParseTuple(args, "dddd", &llx, &lly, &urx, &ury))
         {
             QRectF world(llx, ury, urx-llx, ury-lly);
-            QMetaObject::invokeMethod(s, "setworldcoordinates", Qt::QueuedConnection, Q_ARG(QRectF, world));
-            QApplication::processEvents();
-            Py_RETURN_NONE;
+            return invoke(s, "setworldcoordinates", Q_ARG(QRectF, world));
         }
     }
 
@@ -184,22 +173,22 @@ PyObject* setworldcoordinates_global(PyObject */*self*/, PyObject *args)
 
 PyObject* mainloop_global(PyObject* /*self*/, PyObject* /*args*/)
 {
-    return invoke0(getScreen(), "mainloop");
+    return invoke(getScreen(), "mainloop");
 }
 
 PyObject* bye_global(PyObject* /*self*/, PyObject* /*args*/)
 {
-    return invoke0(getScreen(), "bye");
+    return invoke(getScreen(), "bye");
 }
 
 PyObject* exitonclick_global(PyObject* /*self*/, PyObject* /*args*/)
 {
-    return invoke0(getScreen(), "exitonclick");
+    return invoke(getScreen(), "exitonclick");
 }
 
 PyObject* resetscreen_global(PyObject* /*self*/, PyObject* /*args*/)
 {
-    return invoke0(getScreen(), "reset");
+    return invoke(getScreen(), "reset");
 }
 
 

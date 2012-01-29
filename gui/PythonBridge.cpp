@@ -84,6 +84,7 @@ void PythonBridge::executeScript(const QString& script)
 
 void PythonBridge::step()
 {
+    qDebug() << "step, wake all";
     _wait.wakeAll();
 }
 
@@ -98,6 +99,7 @@ void PythonBridge::stop()
         QMutexLocker l(&_mutex);
         _stop = true;
     }
+    qDebug() << "stop, wake all";
     _wait.wakeAll();
 }
 
@@ -138,6 +140,7 @@ void PythonBridge::scriptCompleted()
 
 void PythonBridge::lineExecuted(int line)
 {
+    qDebug() << "line executed: " << line;
     Q_EMIT currentLineChanged(line);
 }
 
@@ -188,7 +191,9 @@ int PythonBridge::trace(PyObject *obj, PyFrameObject *frame, int what, PyObject 
 
         // wait for the green light
         _instance->_mutex.lock();
+        qDebug() << "trace, blocking thread, line" << lineNum;
         _instance->_wait.wait(&_instance->_mutex);
+        qDebug() << "unlocked";
         _instance->_mutex.unlock();
     }
 

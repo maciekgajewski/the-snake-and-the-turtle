@@ -76,7 +76,6 @@ void EditorWidget::resizeEvent(QResizeEvent *e)
 
 void EditorWidget::keyPressEvent(QKeyEvent *e)
 {
-    Qt::Key k = (Qt::Key)e->key();
     if (e->key() == Qt::Key_Tab && handleTab(e->modifiers()))
     {
         e->setAccepted(true);
