@@ -21,6 +21,8 @@
 #ifndef TURTLE_PYTHONBRIDGE_HPP
 #define TURTLE_PYTHONBRIDGE_HPP
 
+#include "Synchronizer.hpp"
+
 #include <QObject>
 #include <QFutureWatcher>
 #include <QTcpSocket>
@@ -28,6 +30,7 @@
 
 #include <Python.h>
 #include <frameobject.h>
+
 
 namespace Turtle {
 
@@ -77,7 +80,8 @@ private:
     static bool _stop; // intra-thread stop flag
     static PyObject* _exception;
 
-    QSemaphore _semaphore;
+    Synchronizer _synchronizer;
+
     QMutex _mutex;
 };
 

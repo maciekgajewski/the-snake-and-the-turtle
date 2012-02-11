@@ -254,7 +254,7 @@ static PyObject* forward(Turtle* t, PyObject* args, double mply)
         double steps;
         if (PyArg_ParseTuple(args, "d", &steps))
         {
-            return invokeWait(t, "forward", Q_ARG(double, steps*mply));
+            return invoke(t, "forward", Q_ARG(double, steps*mply));
         }
     }
 
@@ -269,7 +269,7 @@ static PyObject* goTo(Turtle* t, PyObject* args)
         if (PyArg_ParseTuple(args, "dd", &x, &y))
         {
             QPointF p(x, y);
-            return invokeWait(t, "goTo", Q_ARG(QPointF, p));
+            return invoke(t, "goTo", Q_ARG(QPointF, p));
         }
     }
 
@@ -309,7 +309,7 @@ static PyObject* left(Turtle* t, PyObject* args, double mply)
         double angle;
         if (PyArg_ParseTuple(args, "d", &angle))
         {
-            return invokeWait(t, "left", Q_ARG(double, angle*mply));
+            return invoke(t, "left", Q_ARG(double, angle*mply));
         }
     }
 
@@ -405,7 +405,7 @@ static PyObject* circle(Turtle* t, PyObject *args, PyObject* keywords)
         unsigned int steps = 0;
         if (PyArg_ParseTupleAndKeywords(args, keywords, "d|dI", kwlist, &radius, &extent, &steps))
         {
-            return invokeWait(t, "circle", Q_ARG(double,radius), Q_ARG(double,extent), Q_ARG(unsigned int,steps));
+            return invoke(t, "circle", Q_ARG(double,radius), Q_ARG(double,extent), Q_ARG(unsigned int,steps));
         }
     }
 

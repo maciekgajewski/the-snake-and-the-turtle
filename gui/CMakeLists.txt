@@ -24,6 +24,7 @@ ADD_EXECUTABLE(gui WIN32
     Emb.cpp Emb.hpp
     Library.cpp Library.hpp
     LibraryBrowser.cpp LibraryBrowser.hpp
+    Synchronizer.cpp Synchronizer.hpp
 
     ${mocfiles}
     ${uifiles}

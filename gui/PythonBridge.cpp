@@ -41,9 +41,8 @@ PyObject* PythonBridge::_exception = nullptr;
 bool PythonBridge::_stop = false;
 
 PythonBridge::PythonBridge(QObject *parent)
-    : QObject(parent),
+    : QObject(parent)
 
-    _semaphore(1)
 {
     Q_ASSERT(!_instance);
     _instance = this;
@@ -86,8 +85,7 @@ void PythonBridge::executeScript(const QString& script)
 
 void PythonBridge::step()
 {
-    qDebug() << "step, wake all";
-    _semaphore.release(1);
+    _synchronizer.Unlock(); // this will allow interpreter thread to continue
 }
 
 void PythonBridge::reset()
@@ -101,8 +99,7 @@ void PythonBridge::stop()
         QMutexLocker l(&_mutex);
         _stop = true;
     }
-    qDebug() << "stop, wake all";
-    _semaphore.release(1);
+    _synchronizer.UnlockIfArmed();
 }
 
 void PythonBridge::scriptCompleted()
@@ -142,7 +139,6 @@ void PythonBridge::scriptCompleted()
 
 void PythonBridge::lineExecuted(int line)
 {
-    qDebug() << "line executed: " << line;
     Q_EMIT currentLineChanged(line);
 }
 
@@ -189,13 +185,18 @@ int PythonBridge::trace(PyObject *obj, PyFrameObject *frame, int what, PyObject 
     if (what == PyTrace_LINE)
     {
         int lineNum = PyFrame_GetLineNumber(frame);
+        Q_ASSERT(PyUnicode_Check(frame->f_code->co_filename));
+        QString file = QString::fromWCharArray(PyUnicodeUCS2_AsUnicode(frame->f_code->co_filename));
 
-        // wait for the green light
-        QMetaObject::invokeMethod(_instance, "lineExecuted", Qt::QueuedConnection, Q_ARG(int, lineNum));
-        qDebug() << "trace, blocking thread, line" << lineNum;
-        _instance->_semaphore.acquire(1); // re-acquiring semaphore
-        qDebug() << "unlocked";
-        _instance->_mutex.unlock();
+        // if this is our file, notify debugger
+        if (file == "__thesnakeandtheturtle__")
+        {
+            _instance->_synchronizer.Arm();
+            QMetaObject::invokeMethod(_instance, "lineExecuted", Qt::QueuedConnection, Q_ARG(int, lineNum));
+
+            // wait for the green light
+            _instance->_synchronizer.WaitAndUnarm();
+        }
     }
 
     return 0;
@@ -203,16 +204,12 @@ int PythonBridge::trace(PyObject *obj, PyFrameObject *frame, int what, PyObject 
 
 PyObject* PythonBridge::runScript(QString code)
 {
-    qDebug() << "Script starting, qcquiring semaphore";
-    _instance->_semaphore.acquire(1);
-
     PyObject* mainModule = PyImport_AddModule("__main__");
     PyObject* globals = PyModule_GetDict(mainModule);
-    PyObject* res = PyRun_String(code.toAscii(), Py_file_input, globals, globals);
 
-    qDebug() << "Script ended, releasing semaphore";
-    _instance->_semaphore.release(1);
-
+    // faking file name, so we can intercept only 'our' tracer events
+    PyObject* compiled = Py_CompileString(code.toAscii(), "__thesnakeandtheturtle__", Py_file_input);
+    PyObject* res = PyEval_EvalCode(compiled, globals, globals);
     return res;
 }
 

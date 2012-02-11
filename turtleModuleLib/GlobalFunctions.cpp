@@ -218,6 +218,7 @@ PyObject* invoke1(QObject* obj, const char* method, QGenericArgument param)
     return invokeStatusToPyError(r);
 }
 
+// invokes and blocks until the method completes
 PyObject* invoke(
         QObject* obj,
         const char* method,
@@ -226,20 +227,7 @@ PyObject* invoke(
         QGenericArgument p3,
         QGenericArgument p4)
 {
-    bool r = QMetaObject::invokeMethod(obj, method, Qt::QueuedConnection, p1, p2, p3, p4);
-    QApplication::processEvents();
-    return invokeStatusToPyError(r);
-}
-
-// incokes and blocks until the method completes
-PyObject* invokeWait(
-        QObject* obj,
-        const char* method,
-        QGenericArgument p1,
-        QGenericArgument p2,
-        QGenericArgument p3,
-        QGenericArgument p4)
-{
+    // call directly in single-thread mode
     Qt::ConnectionType ct = Module::instance()->isEmbedded() ?
         Qt::BlockingQueuedConnection : Qt::DirectConnection;
     bool r = QMetaObject::invokeMethod(obj, method, ct, p1, p2, p3, p4);
