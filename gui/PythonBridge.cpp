@@ -85,7 +85,7 @@ void PythonBridge::executeScript(const QString& script)
 
 void PythonBridge::step()
 {
-    _synchronizer.Unlock(); // this will allow interpreter thread to continue
+    _synchronizer.UnlockIfArmed(); // this will allow interpreter thread to continue
 }
 
 void PythonBridge::reset()

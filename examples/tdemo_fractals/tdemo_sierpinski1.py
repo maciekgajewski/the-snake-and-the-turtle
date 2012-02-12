@@ -17,7 +17,7 @@ similar to the 2-vector class, which is part
 of the turtle graphics module.
 """
 
-from turtle import *
+from qturtle import *
 from time import clock
 
 class Vec3(tuple):
@@ -35,47 +35,43 @@ def triangle(laenge, stufe, f1, f2, f3):  # f1, f2, f3 colors of the vertices
         color((f1+f2+f3)/3)
         begin_fill()
         for i in range(3):
-            fd(laenge)
-            lt(120)
+            forward(laenge)
+            left(120)
         end_fill()
     else:
         c12 = (f1+f2)/2
         c13 = (f1+f3)/2
         c23 = (f2+f3)/2
         triangle(laenge / 2, stufe - 1, f1, c12, c13)
-        fd(laenge)
-        lt(120)
+        forward(laenge)
+        left(120)
         triangle(laenge / 2, stufe - 1, f2, c23, c12)
-        fd(laenge)
-        lt(120)
+        forward(laenge)
+        left(120)
         triangle(laenge / 2, stufe - 1, f3, c13, c23)
-        fd(laenge)
-        lt(120)
+        forward(laenge)
+        left(120)
 
-def main():
-    setup(720, 720)
-    reset()
-    setundobuffer(1)
-    sierp_size = 600
-    colormode(255)
-    speed(0)
-    ht()
-    pu()
-    bk(sierp_size*0.5)
-    lt(90)
-    bk(sierp_size*0.4)
-    rt(90)
-    tracer(1,0)
-    ta = clock()
-    triangle(sierp_size, 6,
-            Vec3(255.0,0,0), Vec3(0,255.0,0), Vec3(0,0,255.0))
-    tb = clock()
-    return "{0:.2f} sec.".format(tb-ta)
+setup(720, 720)
+reset()
+setundobuffer(1)
+sierp_size = 600
+colormode(255)
+speed(0)
+hideturtle()
+penup()
+back(sierp_size*0.5)
+left(90)
+back(sierp_size*0.4)
+right(90)
+tracer(1,0)
+ta = clock()
+triangle(sierp_size, 6,
+		Vec3(255.0,0,0), Vec3(0,255.0,0), Vec3(0,0,255.0))
+tb = clock()
+print("{0:.2f} sec.".format(tb-ta))
 
-if __name__ == '__main__':
-    msg = main()
-    print(msg)
-    mainloop()
+mainloop()
 
 
 ## on my desktop-machine: approx. 1.5 sec.

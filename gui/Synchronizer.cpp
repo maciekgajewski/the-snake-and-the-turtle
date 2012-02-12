@@ -63,6 +63,7 @@ void Synchronizer::WaitAndUnarm()
     {
         QMutexLocker l(&_mutex);
         delete _semaphore;
+        _semaphore = nullptr;
     }
 
 }
