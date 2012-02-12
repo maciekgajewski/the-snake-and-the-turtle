@@ -15,7 +15,7 @@ triangular cells of the Sierpinski triangle
 are computed by interpolation.
 """
 
-from turtle import *
+from qturtle import *
 from time import clock
 
 class Vec3(tuple):   #######  rudimentary, just as needed
@@ -48,33 +48,30 @@ def triangle(laenge, stufe, f1, f2, f3):  # f1, f2, f3 colors of the vertices
         bk(laenge)
         left(120)
 
-def main():
-    setup(640, 640)
-    mode("logo")
-    reset()
-    setundobuffer(1)
-    colormode(255)
-    ht()
-    pu()
-    speed(0)
-    shape("triangle")
-    sierp_size = 600
-    h3 = (sierp_size/6.0)*3**0.5
+setup(640, 640)
+mode("logo")
+reset()
+setundobuffer(1)
+colormode(255)
+ht()
+pu()
+speed(0)
+shape("triangle")
+sierp_size = 600
+h3 = (sierp_size/6.0)*3**0.5
 
-    depth = 6
-    shapesize(sierp_size/20./(2**depth))
-    tracer(1,0)
-    bk(h3/2.0)
-    ta = clock()
-    triangle(h3, depth,
-            Vec3(255.0,0,0), Vec3(0,255.0,0), Vec3(0,0,255.0))
-    tracer(1)
-    tb = clock()
-    return "{0:.2f} sec.".format(tb-ta)
+depth = 6
+shapesize(sierp_size/20./(2**depth))
+tracer(1,0)
+bk(h3/2.0)
+ta = clock()
+pendown()
+triangle(h3, depth,
+		Vec3(255.0,0,0), Vec3(0,255.0,0), Vec3(0,0,255.0))
+tracer(1)
+tb = clock()
+print("{0:.2f} sec.".format(tb-ta))
 
-if __name__ == '__main__':
-    msg = main()
-    print(msg)
-    mainloop()
+mainloop()
 
 ## on my desktop-machine: approx. 0.6 sec.

@@ -64,7 +64,7 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     // TODO remove if not used
 }
 
-void MainWindow::startScript(bool fast, bool all)
+void MainWindow::startScript(bool superfast, bool fast, bool all)
 {
     _executeAll = all;
     _executeFast = fast;
@@ -76,23 +76,27 @@ void MainWindow::startScript(bool fast, bool all)
     ui->codeEditor->clearMarkers();
 
     QString code = ui->codeEditor->toPlainText();
-    _python->executeScript(code);
+    _python->executeScript(code, !superfast);
 }
 
+void MainWindow::on_executeSuperfastButton_clicked()
+{
+    startScript(true, true, true);
+}
 
 void MainWindow::on_startButton_clicked()
 {
-    startScript(false, false);
+    startScript(false, false, false);
 }
 
 void MainWindow::on_executeAllButton_clicked()
 {
-    startScript(false, true);
+    startScript(false, false, true);
 }
 
 void MainWindow::on_executeAllFastButton_clicked()
 {
-    startScript(true, true);
+    startScript(false, true, true);
 }
 
 void MainWindow::on_examplesButton_clicked()
@@ -113,16 +117,17 @@ void MainWindow::lineAboutToBeExecuted(int line)
     {
         if (_executeFast)
         {
-            _python->step();
+            _python->stepIn();
         }
         else
         {
-            QTimer::singleShot(200, _python, SLOT(step()));
+            QTimer::singleShot(200, _python, SLOT(stepIn()));
         }
     }
     else
     {
         ui->stepButton->setEnabled(true);
+        ui->stepOverButton->setEnabled(true);
     }
 }
 
@@ -156,7 +161,7 @@ void MainWindow::loadFile(const QString &path)
 
 void MainWindow::on_stepButton_clicked()
 {
-    _python->step();
+    _python->stepIn();
     ui->stepButton->setEnabled(false);
 }
 
@@ -171,7 +176,15 @@ void MainWindow::on_interruptButton_clicked()
     _python->stop();
 }
 
+void MainWindow::on_stepOverButton_clicked()
+{
+    _python->stepOver();
+    ui->stepOverButton->setEnabled(false);
 }
+
+}
+
+
 
 
 

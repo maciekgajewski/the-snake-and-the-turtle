@@ -6,21 +6,55 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>596</width>
-    <height>437</height>
+    <width>644</width>
+    <height>495</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>The Snake And The Turtle</string>
   </property>
+  <property name="dockNestingEnabled">
+   <bool>true</bool>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QPushButton" name="mButtonNew">
         <property name="text">
          <string>New program</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="examplesButton">
+        <property name="text">
+         <string>Examples</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="executeSuperfastButton">
+        <property name="text">
+         <string>Execute superfast</string>
         </property>
        </widget>
       </item>
@@ -51,7 +85,14 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>Step</string>
+         <string>Step In</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="stepOverButton">
+        <property name="text">
+         <string>Step Over</string>
         </property>
        </widget>
       </item>
@@ -59,13 +100,6 @@
        <widget class="QPushButton" name="interruptButton">
         <property name="text">
          <string>Interrupt</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="examplesButton">
-        <property name="text">
-         <string>Examples</string>
         </property>
        </widget>
       </item>
@@ -133,7 +167,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>596</width>
+     <width>644</width>
      <height>21</height>
     </rect>
    </property>
@@ -148,8 +182,14 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="features">
-    <set>QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
     <string>Console output</string>
@@ -161,6 +201,12 @@
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QPlainTextEdit" name="consoleOutput">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="readOnly">
         <bool>true</bool>
        </property>

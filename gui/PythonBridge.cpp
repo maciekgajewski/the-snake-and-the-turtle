@@ -46,6 +46,7 @@ PythonBridge::PythonBridge(QObject *parent)
 {
     Q_ASSERT(!_instance);
     _instance = this;
+    _requestedNextLinestop = LINESTOP_NONE;
 
     PyImport_AppendInittab("qturtle", &PythonBridge::initModule);
     PyImport_AppendInittab("emb", emb::PyInit_emb);
@@ -68,13 +69,14 @@ PythonBridge::~PythonBridge()
     Py_Finalize();
 }
 
-void PythonBridge::executeScript(const QString& script)
+void PythonBridge::executeScript(const QString& script, bool step)
 {
     if (!_scriptResult.isRunning())
     {
         _stop = false;
         TurtleModule::resetModule();
-        QFuture<PyObject*> future = QtConcurrent::run(std::bind(&PythonBridge::runScript, this, script));
+        // why u no work with lambda?
+        QFuture<PyObject*> future = QtConcurrent::run(std::bind(&PythonBridge::runScript, this, script, step));
         _scriptResult.setFuture(future);
     }
     else
@@ -83,9 +85,16 @@ void PythonBridge::executeScript(const QString& script)
     }
 }
 
-void PythonBridge::step()
+void PythonBridge::stepIn()
 {
-    _synchronizer.UnlockIfArmed(); // this will allow interpreter thread to continue
+    setNextLinestop(LINESTOP_STOP);
+    _synchronizer.UnlockIfArmed();
+}
+
+void PythonBridge::stepOver()
+{
+    setNextLinestop(LINESTOP_FRAME);
+    _synchronizer.UnlockIfArmed();
 }
 
 void PythonBridge::reset()
@@ -182,6 +191,7 @@ int PythonBridge::trace(PyObject *obj, PyFrameObject *frame, int what, PyObject 
             return -1;
         }
     }
+    // note: mutex can not be held in the scope below!
     if (what == PyTrace_LINE)
     {
         int lineNum = PyFrame_GetLineNumber(frame);
@@ -191,19 +201,54 @@ int PythonBridge::trace(PyObject *obj, PyFrameObject *frame, int what, PyObject 
         // if this is our file, notify debugger
         if (file == "__thesnakeandtheturtle__")
         {
-            _instance->_synchronizer.Arm();
-            QMetaObject::invokeMethod(_instance, "lineExecuted", Qt::QueuedConnection, Q_ARG(int, lineNum));
-
-            // wait for the green light
-            _instance->_synchronizer.WaitAndUnarm();
+            if (_instance->_breakpoints.linestop == LINESTOP_STOP)
+            {
+                _instance->stopOnBreakpoint(lineNum, frame);
+            }
+            else if (_instance->_breakpoints.linestop == LINESTOP_FRAME)
+            {
+                if (frame == _instance->_breakpoints.frame)
+                {
+                    _instance->stopOnBreakpoint(lineNum, frame);
+                }
+            }
         }
     }
+
 
     return 0;
 }
 
-PyObject* PythonBridge::runScript(QString code)
+void PythonBridge::stopOnBreakpoint(int lineNum, PyFrameObject *frame)
 {
+    _synchronizer.Arm();
+    QMetaObject::invokeMethod(_instance, "lineExecuted", Qt::QueuedConnection, Q_ARG(int, lineNum));
+
+    // wait for the green light
+    _synchronizer.WaitAndUnarm();
+
+    //read requested linestop
+    Linestop requestedLinestop;
+    {
+        QMutexLocker l(&_instance->_mutex);
+        requestedLinestop = _instance->_requestedNextLinestop;
+        _requestedNextLinestop = LINESTOP_NONE;
+    }
+    _breakpoints.linestop = requestedLinestop;
+    _breakpoints.frame = frame;
+}
+
+void PythonBridge::setNextLinestop(PythonBridge::Linestop ls)
+{
+    QMutexLocker l(&_mutex);
+    _requestedNextLinestop = ls;
+}
+
+PyObject* PythonBridge::runScript(QString code, bool step)
+{
+    _breakpoints.linestop = step ? LINESTOP_STOP : LINESTOP_NONE;
+    _breakpoints.frame = nullptr;
+
     PyObject* mainModule = PyImport_AddModule("__main__");
     PyObject* globals = PyModule_GetDict(mainModule);
 

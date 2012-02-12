@@ -44,8 +44,9 @@ public:
 
 public Q_SLOTS:
 
-    void executeScript(const QString& script);
-    void step();
+    void executeScript(const QString& script, bool step);
+    void stepIn();
+    void stepOver();
     void reset(); // restes everything
     void stop(); //breaks running script
 
@@ -70,17 +71,46 @@ private:
 
     static PyObject* initModule();
     static QString repr(PyObject* o);
-    static int trace(PyObject *obj, PyFrameObject *frame, int what, PyObject *arg);
-    static PythonBridge* _instance;
 
-    /// Runs script. Executed in separate thread
-    PyObject* runScript(QString code);
+    // libestop command - describes desired bahaviour on next line encountered
+    enum Linestop
+    {
+        LINESTOP_NONE, // do not stop
+        LINESTOP_STOP, // stop on any line
+        LINESTOP_FRAME, // stop on next line in a specific frame
+    };
+
+    // describes breakpoint states
+    struct Breakpoints
+    {
+        Breakpoints() : linestop(LINESTOP_NONE), frame(nullptr) {}
+
+        Linestop linestop;
+        void* frame;
+    };
+
+    // (SCRIPT THREAD)
+    static int trace(PyObject *obj, PyFrameObject *frame, int what, PyObject *arg);
+
+    /// (SCRIPT THREAD) Runs script. Executed in separate thread
+    PyObject* runScript(QString code, bool step);
+
+    /// (SCRIPT THREAD) Stops on breakpoint
+    void stopOnBreakpoint(int lineNum, PyFrameObject *frame);
+
+    ///  instance used by interpreter thread
+    static PythonBridge* _instance;
 
     QFutureWatcher<PyObject*> _scriptResult;
     static bool _stop; // intra-thread stop flag
     static PyObject* _exception;
 
     Synchronizer _synchronizer;
+    Breakpoints _breakpoints; // accessed only from interpreter thread
+
+    // inter-thread breakpoint commands, guarded by mutex
+    Linestop _requestedNextLinestop;
+    void setNextLinestop(Linestop ls);
 
     QMutex _mutex;
 };

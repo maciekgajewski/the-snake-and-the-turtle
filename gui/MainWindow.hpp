@@ -57,13 +57,17 @@ private Q_SLOTS:
     void on_executeAllFastButton_clicked();
     void on_examplesButton_clicked();
 
+    void on_stepOverButton_clicked();
+
+    void on_executeSuperfastButton_clicked();
+
 protected:
 
     virtual void resizeEvent(QResizeEvent* event);
 
 private:
 
-    void startScript(bool fast, bool all);
+    void startScript(bool superfast, bool fast, bool all);
 
     Ui::MainWindow *ui;
     PythonBridge* _python;
