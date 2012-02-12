@@ -21,32 +21,28 @@ illusions.
 
 from qturtle import *
 
-def main():
-    setup(800, 600)
-    bgcolor("gray") # was gray60
-    setworldcoordinates(-4.4, -3.3, 4.4, 3.3)
-    ht()
-    pu()
-    tracer(False)
-    color("black")
-    shape("square")
-    shapesize(3.4)
-    for col in range(-5, 5):
-        for row in range(-4, 4):
-            goto(col+0.5, row+0.5)
-            stamp()
-    color("white")
-    shape("circle")
-    shapesize(1.6)
-    for col in range(-5, 5):
-        for row in range(-4, 4):
-            goto(col, row)
-            stamp()
-    tracer(True)
-    return "DONE!"
+setup(800, 600)
+bgcolor("gray60")
+setworldcoordinates(-4.4, -3.3, 4.4, 3.3)
+ht()
+pu()
+tracer(False)
+color("black")
+shape("square")
+shapesize(3.4)
+for col in range(-5, 5):
+	for row in range(-4, 4):
+		goto(col+0.5, row+0.5)
+		stamp()
+color("white")
+shape("circle")
+shapesize(1.6)
+for col in range(-5, 5):
+	for row in range(-4, 4):
+		goto(col, row)
+		stamp()
+tracer(True)
+print("DONE!")
 
-if __name__ == "__main__":
-    msg = main()
-    print(msg)
-    mainloop()
+mainloop()
     

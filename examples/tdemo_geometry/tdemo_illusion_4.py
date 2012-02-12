@@ -13,7 +13,7 @@ Inspired by NetLogo's model of optical
 illusions.
 """
 
-from turtle import *
+from qturtle import *
 
 
 def circlepattern(r1, d, r2):

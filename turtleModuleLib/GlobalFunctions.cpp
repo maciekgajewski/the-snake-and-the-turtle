@@ -48,6 +48,10 @@ static PyMethodDef qturtleMethods[] = {
     {"colormode", not_implemented_global,  METH_VARARGS| METH_KEYWORDS,
         "Return the colormode or set it to 1.0 or 255 (not implemented)."},
 
+    {"write", not_implemented_global,  METH_VARARGS| METH_KEYWORDS,
+        "Wrtie text (not implemented)."},
+
+
     {"hideturtle", hideturtle_global, METH_NOARGS,
         "Make the turtle invisible."},
     {"ht", hideturtle_global, METH_NOARGS,
@@ -86,6 +90,8 @@ static PyMethodDef qturtleMethods[] = {
         "Return or set pencolor and fillcolor."},
     {"tracer", not_implemented_global,  METH_VARARGS| METH_KEYWORDS,
         "Turn turtle animation on/off and set delay for update drawings (not implemented)."},
+    {"update", not_implemented_global,  METH_VARARGS| METH_KEYWORDS,
+        "Perform a TurtleScreen update. To be used when tracer is turned off (not implemented)."},
     {"setundobuffer", not_implemented_global,  METH_VARARGS| METH_KEYWORDS,
         "Set or disable undobuffer (not implemented)."},
     {"speed", not_implemented_global,  METH_VARARGS| METH_KEYWORDS,

@@ -75,6 +75,12 @@ Turtle *TurtleScreen::turtle() const
     return _turtles[0];
 }
 
+void TurtleScreen::resetHard()
+{
+    _bgcolor = Qt::white;
+    mode(MODE_STANDARD);
+}
+
 void TurtleScreen::bgcolor(const QColor &color)
 {
     QMutexLocker l(&_mutex);
@@ -141,7 +147,6 @@ void TurtleScreen::reset()
 
     _scene = new QGraphicsScene(this);
     setScene(_scene);
-    _bgcolor = Qt::white;
     _scene->setBackgroundBrush(_bgcolor);
 
     _turtles.append(new Turtle(this));

@@ -56,6 +56,8 @@ public:
 
     Turtle* turtle() const;
 
+    void resetHard(); // restt between executions
+
 public Q_SLOTS:
 
     // see python Turtle documentation for description of these methods

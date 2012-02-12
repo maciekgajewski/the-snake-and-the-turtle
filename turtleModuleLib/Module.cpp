@@ -84,7 +84,9 @@ TurtleScreen *Module::screen()
 void Module::reset()
 {
     if (_screen)
-        _screen->mode(TurtleScreen::MODE_STANDARD);
+    {
+        _screen->resetHard();
+    }
 }
 
 } // namespace TurtlrModule

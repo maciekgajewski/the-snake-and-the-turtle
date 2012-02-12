@@ -14,7 +14,7 @@ if you focus your eyes on their center.
 Inspired by NetLogo's model of optical
 illusions.
 """
-from turtle import *
+from qturtle import *
 
 def main():
     diamondshape = Shape("compound")

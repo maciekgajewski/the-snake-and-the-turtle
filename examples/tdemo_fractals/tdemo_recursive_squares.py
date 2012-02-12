@@ -12,7 +12,7 @@ first, the smaller ones upon them.
 
 Finally you see 5461 squares.
 """
-from qturtle import Turtle, Screen
+from qturtle import *
 from time import clock
 
 colors = ["red", "green", "blue", "yellow",
@@ -20,34 +20,34 @@ colors = ["red", "green", "blue", "yellow",
 
 def recsquare(l, f, colors):
     if not colors: return
-    t.shapesize(l/20)
-    t.color(colors[0])
-    t.stamp()
-    t.fd(l/2.0)
-    t.lt(90)
-    t.fd(l/2)
-    t.lt(90)
+    shapesize(l/20)
+    color(colors[0])
+    stamp()
+    forward(l/2.0)
+    left(90)
+    forward(l/2)
+    left(90)
     for _ in range(4):
         recsquare(l*f, f, colors[1:])
-        t.fd(l)
-        t.lt(90)
-    t.rt(90)
-    t.bk(l/2)
-    t.rt(90)
-    t.bk(l/2)
+        forward(l)
+        left(90)
+    right(90)
+    bk(l/2)
+    right(90)
+    back(l/2)
     if len(colors) == 5:
-        s.update()
+        update()
 
-global s, t
-s = Screen()
-s.bgcolor("gray10")
-t = Turtle(visible=False, shape="square")
-t.pu()
-t.speed(0)
-s.tracer(False)
+bgcolor("gray10")
+shape("square")
+hideturtle()
+
+penup()
+speed(0)
+tracer(False)
 ta = clock()
 recsquare(256, 0.5, colors)
 tb = clock()
 print("{0:.2f}sec.".format(tb-ta))
 
-s.mainloop()
+mainloop()
