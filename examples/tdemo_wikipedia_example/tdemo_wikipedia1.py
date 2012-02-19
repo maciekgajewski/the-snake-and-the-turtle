@@ -13,7 +13,7 @@ It's a plain transcription of the
 corresponding Logo code.
 
 """
-from turtle import *
+from qturtle import *
 from time import clock
 
 def n_eck(ne,sz):

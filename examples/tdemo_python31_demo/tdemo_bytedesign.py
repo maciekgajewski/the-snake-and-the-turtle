@@ -23,7 +23,7 @@ mode as fast as possible.
 """
 
 import math
-from turtle import Turtle, mainloop
+from qturtle import Turtle, mainloop
 from time import clock
 
 # wrapper for any additional drawing routines

@@ -19,7 +19,7 @@ for a very concise formulation of the orbit
 calculation algorithm. (Note that methods
 like pos() return vectors.)
 """
-from turtle import Screen, Turtle, Shape, Vec2D
+from qturtle import Screen, Turtle, Shape, Vec2D
 
 G = 8
 

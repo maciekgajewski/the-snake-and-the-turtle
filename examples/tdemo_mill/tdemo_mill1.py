@@ -6,7 +6,7 @@
 Demonstrates a user defined 'three winged'
 pen. Pen rotates via left() command (as usual).
 """
-from turtle import *
+from qturtle import *
 
 def main():
     reset()

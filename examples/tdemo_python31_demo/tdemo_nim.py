@@ -10,7 +10,7 @@ design pattern.
 """
 
 
-import turtle
+import qturtle
 import random
 import time
 

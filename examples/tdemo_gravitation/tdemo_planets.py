@@ -17,7 +17,7 @@ pressing the left mouse button with mouse
 on the scrollbar of the canvas.
 
 """
-from turtle import Shape, Screen, Turtle, Vec2D
+from qturtle import Shape, Screen, Turtle, Vec2D
 
 G = 8   # gravitational constant
 

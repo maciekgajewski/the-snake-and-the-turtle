@@ -20,7 +20,7 @@ Lindenmayer generators
 # this time a bit more sophisticated
 ####################################
 
-from turtle import Turtle, Screen
+from qturtle import Turtle, Screen
 
 def replace( seq, replacementRules, n ):
     for i in range(n):

@@ -14,7 +14,7 @@ Use left mouse button to drag, middle
 and right mouse button clicks to turn tiles,
 left button doubleclick to flip rhomboid.
 """
-from turtle import Turtle, Screen, Vec2D 
+from qturtle import Turtle, Screen, Vec2D 
 from button import Button
 import sys, random, time
 

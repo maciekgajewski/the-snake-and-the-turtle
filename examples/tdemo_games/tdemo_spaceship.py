@@ -26,7 +26,7 @@ Remark: this is a rather old script;
 a rewrite possibly  on OOP basis
 would make it clearer and/or cleaner.
 """
-from turtle import *
+from qturtle import *
 from time import clock
 
 FORCE_UNIT = 0.1  # change this to fine-tune

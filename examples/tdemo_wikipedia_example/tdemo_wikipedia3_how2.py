@@ -15,7 +15,7 @@ using normal speed and tracer(1). So
 it's execution time is (intentionally) much
 longer.
 """
-from turtle import *
+from qturtle import *
 from time import clock
 
 def mn_eck(p, ne,sz):

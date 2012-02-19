@@ -25,7 +25,7 @@ Cultures
 # Mini Lindenmayer tool
 ###############################
 
-from turtle import *
+from qturtle import *
 
 def replace( seq, replacementRules, n ):
     for i in range(n):

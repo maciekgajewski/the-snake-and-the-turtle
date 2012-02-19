@@ -29,7 +29,7 @@ gravitational force exerted on the moon by the
 sun is always greater that that exerted by
 the earth.
 """
-from turtle import Screen, Turtle, Shape, Vec2D
+from qturtle import Screen, Turtle, Shape, Vec2D
 from time import sleep
 
 mS = 2.e30

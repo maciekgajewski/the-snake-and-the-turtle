@@ -13,7 +13,7 @@ of turtles for doing vector calculations.
 An only little more sophisticated approach
 is used by the other gravitation examples.
 """
-from turtle import *
+from qturtle import *
 
 def main():
     color("orange")

@@ -10,7 +10,7 @@ and time
    Press STOP to exit the program!
   ------------------------------------
 """
-from turtle import *
+from qturtle import *
 from datetime import datetime
 
 mode("logo")

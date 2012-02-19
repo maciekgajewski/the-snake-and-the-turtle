@@ -17,7 +17,7 @@ transformed into iterative versions.
 This is an example.
 """
 
-from turtle import Screen, Turtle
+from qturtle import Screen, Turtle
 
 screen = Screen()
 

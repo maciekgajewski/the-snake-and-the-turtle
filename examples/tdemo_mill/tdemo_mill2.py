@@ -12,7 +12,7 @@ Be patient. (You migkht want to enlarge your
 xturtleDemo window or use the canvas'
 scrollbars to search for the wheel.)
 """
-from turtle import *
+from qturtle import *
 from time import clock
 
 WINGSIZE = 135

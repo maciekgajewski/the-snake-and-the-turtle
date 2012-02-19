@@ -8,7 +8,7 @@ mathemtically identical functions.
 (Verhulst dynamics) They show (1) chaotic and
 (2) profoundly diverging behaviour.
 """
-from turtle import *
+from qturtle import *
 
 N = 80
 

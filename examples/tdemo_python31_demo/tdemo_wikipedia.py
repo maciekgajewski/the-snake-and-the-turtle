@@ -13,7 +13,7 @@ parallel.
 
 Followed by a complete undo().
 """
-from turtle import Screen, Turtle, mainloop
+from qturtle import Screen, Turtle, mainloop
 from time import clock, sleep
 
 def mn_eck(p, ne,sz):

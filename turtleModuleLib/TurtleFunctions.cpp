@@ -31,6 +31,14 @@
 
 namespace TurtleModule {
 
+struct TurtlePyObject
+{
+    PyObject_HEAD
+    Turtle* turtle;
+};
+
+
+
 static Turtle* getTurtle()
 {
     return Module::instance()->screen()->turtle();
@@ -49,6 +57,25 @@ PyObject* hideturtle_global(PyObject *self, PyObject *args)
 PyObject* isvisible_global(PyObject *self, PyObject *args)
 {
     bool visible = getTurtle()->isvisible();
+    if (visible)
+        Py_RETURN_TRUE;
+    else
+        Py_RETURN_FALSE;
+}
+
+PyObject* showturtle_method(TurtlePyObject* self, PyObject *args)
+{
+    return invoke(self->turtle, "showturtle");
+}
+
+PyObject* hideturtle_method(TurtlePyObject* self, PyObject *args)
+{
+    return invoke(self->turtle, "hideturtle");
+}
+
+PyObject* isvisible_method(TurtlePyObject* self, PyObject *args)
+{
+    bool visible = self->turtle->isvisible();
     if (visible)
         Py_RETURN_TRUE;
     else
@@ -89,6 +116,11 @@ PyObject* shapesize_global(PyObject */*self*/, PyObject *args)
     return shapesize(getTurtle(), args);
 }
 
+PyObject* shapesize_method(TurtlePyObject *self, PyObject *args)
+{
+    return shapesize(self->turtle, args);
+}
+
 static PyObject* setdown(Turtle* t, bool down)
 {
     if (t)
@@ -114,6 +146,27 @@ PyObject* pendown_global(PyObject *self, PyObject *args)
 PyObject* isdown_global(PyObject *self, PyObject *args)
 {
     if (getTurtle()->isdown())
+    {
+        Py_RETURN_TRUE;
+    }
+    else
+    {
+        Py_RETURN_FALSE;
+    }
+}
+PyObject* penup_method(TurtlePyObject* self, PyObject *args)
+{
+    return setdown(self->turtle, false);
+}
+
+PyObject* pendown_method(TurtlePyObject* self, PyObject *args)
+{
+    return setdown(self->turtle, true);
+}
+
+PyObject* isdown_method(TurtlePyObject* self, PyObject *args)
+{
+    if (self->turtle->isdown())
     {
         Py_RETURN_TRUE;
     }
@@ -153,6 +206,10 @@ PyObject* shape_global(PyObject */*self*/, PyObject *args)
     return shape(getTurtle(), args);
 }
 
+PyObject* shape_method(TurtlePyObject *self, PyObject *args)
+{
+    return shape(self->turtle, args);
+}
 
 static PyObject* pencolor(Turtle* t, PyObject *args)
 {
@@ -180,6 +237,11 @@ PyObject* pencolor_global(PyObject */*self*/, PyObject *args)
     return pencolor(getTurtle(), args);
 }
 
+PyObject* pencolor_method(TurtlePyObject *self, PyObject *args)
+{
+    return pencolor(self->turtle, args);
+}
+
 static PyObject* fillcolor(Turtle* t, PyObject *args)
 {
     if (t)
@@ -204,6 +266,11 @@ static PyObject* fillcolor(Turtle* t, PyObject *args)
 PyObject* fillcolor_global(PyObject */*self*/, PyObject *args)
 {
     return fillcolor(getTurtle(), args);
+}
+
+PyObject* fillcolor_method(TurtlePyObject *self, PyObject *args)
+{
+    return fillcolor(self->turtle, args);
 }
 
 static PyObject* color(Turtle* t, PyObject *args)
@@ -247,6 +314,11 @@ PyObject* color_global(PyObject *self, PyObject *args)
     return color(getTurtle(), args);
 }
 
+PyObject* color_method(TurtlePyObject* self, PyObject *args)
+{
+    return color(self->turtle, args);
+}
+
 static PyObject* forward(Turtle* t, PyObject* args, double mply)
 {
     if (t)
@@ -286,7 +358,6 @@ PyObject* backward_global(PyObject *self, PyObject *args)
     return forward(getTurtle(), args, -1.0);
 }
 
-
 PyObject* goto_global(PyObject *self, PyObject *args)
 {
     return goTo(getTurtle(), args);
@@ -300,6 +371,31 @@ PyObject* stamp_global(PyObject *self, PyObject *args)
 PyObject* reset_global(PyObject *self, PyObject *args)
 {
     return invoke(getTurtle(), "reset");
+}
+
+PyObject* forward_method(TurtlePyObject* self, PyObject *args)
+{
+    return forward(self->turtle, args, 1.0);
+}
+
+PyObject* backward_method(TurtlePyObject* self, PyObject *args)
+{
+    return forward(self->turtle, args, -1.0);
+}
+
+PyObject* goto_method(TurtlePyObject* self, PyObject *args)
+{
+    return goTo(self->turtle, args);
+}
+
+PyObject* stamp_method(TurtlePyObject* self, PyObject *args)
+{
+    return invoke(self->turtle, "stamp");
+}
+
+PyObject* reset_method(TurtlePyObject* self, PyObject *args)
+{
+    return invoke(self->turtle, "reset");
 }
 
 static PyObject* left(Turtle* t, PyObject* args, double mply)
@@ -326,6 +422,16 @@ PyObject* right_global(PyObject *self, PyObject *args)
     return left(getTurtle(), args, -1.0);
 }
 
+PyObject* left_method(TurtlePyObject *self, PyObject *args)
+{
+    return left(self->turtle, args, 1.0);
+}
+
+PyObject* right_method(TurtlePyObject *self, PyObject *args)
+{
+    return left(self->turtle, args, -1.0);
+}
+
 static PyObject* setheading(Turtle* t, PyObject* args)
 {
     if (t)
@@ -344,6 +450,11 @@ PyObject* setheading_global(PyObject *self, PyObject *args)
     return setheading(getTurtle(), args);
 }
 
+PyObject* setheading_method(TurtlePyObject *self, PyObject *args)
+{
+    return setheading(self->turtle, args);
+}
+
 static PyObject* heading(Turtle* t)
 {
     if (t)
@@ -356,6 +467,11 @@ static PyObject* heading(Turtle* t)
 PyObject* heading_global(PyObject *self, PyObject *args)
 {
     return heading(getTurtle());
+}
+
+PyObject* heading_method(TurtlePyObject *self, PyObject *args)
+{
+    return heading(self->turtle);
 }
 
 static PyObject* width(Turtle* t, PyObject *args)
@@ -395,6 +511,21 @@ PyObject* end_fill_global(PyObject *self, PyObject *args)
     return invoke(getTurtle(), "endFill");
 }
 
+PyObject* width_method(TurtlePyObject *self, PyObject *args)
+{
+    return width(self->turtle,args);
+}
+
+PyObject* begin_fill_method(TurtlePyObject *self, PyObject *args)
+{
+    return invoke(self->turtle, "beginFill");
+}
+
+PyObject* end_fill_method(TurtlePyObject *self, PyObject *args)
+{
+    return invoke(self->turtle, "endFill");
+}
+
 static PyObject* circle(Turtle* t, PyObject *args, PyObject* keywords)
 {
     if (t)
@@ -417,9 +548,19 @@ PyObject* circle_global(PyObject *self, PyObject *args, PyObject* keywords)
     return circle(getTurtle(), args, keywords);
 }
 
+PyObject* circle_method(TurtlePyObject *self, PyObject *args, PyObject* keywords)
+{
+    return circle(self->turtle, args, keywords);
+}
+
 PyObject* home_global(PyObject *self, PyObject *args)
 {
     return invoke(getTurtle(), "home");
+}
+
+PyObject* home_method(TurtlePyObject *self, PyObject *args)
+{
+    return invoke(self->turtle, "home");
 }
 
 static PyObject* dot(Turtle* t, PyObject *args)
@@ -444,6 +585,182 @@ static PyObject* dot(Turtle* t, PyObject *args)
 PyObject* dot_global(PyObject *self, PyObject *args)
 {
     return dot(getTurtle(), args);
+}
+
+PyObject* dot_method(TurtlePyObject* self, PyObject* args)
+{
+    return dot(self->turtle, args);
+}
+
+// ====================== turtle type =============
+
+static void turtle_dealloc(TurtlePyObject* self)
+{
+    delete self->turtle;
+    Py_TYPE(self)->tp_free((PyObject*)self);
+}
+
+static PyObject *turtle_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+{
+    TurtlePyObject *self;
+
+    self = (TurtlePyObject *)type->tp_alloc(type, 0);
+    self->turtle = Module::instance()->screen()->createTurtle();
+    return (PyObject *)self;
+}
+
+static PyObject* not_implemented_method(PyObject* /*self*/, PyObject* /*args*/)
+{
+    Py_RETURN_NONE;
+}
+
+static PyMethodDef Turtle_methods[] = {
+    {"hideturtle", (PyCFunction)hideturtle_method, METH_NOARGS,
+        "Make the turtle invisible."},
+    {"ht", (PyCFunction)hideturtle_method, METH_NOARGS,
+        "Make the turtle invisible."},
+    {"showturtle", (PyCFunction)showturtle_method, METH_NOARGS,
+        "Make the turtle visible."},
+    {"st", (PyCFunction)showturtle_method, METH_NOARGS,
+        "Make the turtle visible."},
+    {"isvisible", (PyCFunction)isvisible_method, METH_NOARGS,
+        "Return True if the Turtle is shown, False if it’s hidden."},
+    {"shapesize", (PyCFunction)shapesize_method, METH_VARARGS,
+        "Return or set the pen’s attributes x/y-stretchfactors and/or outline."},
+    {"turtlesize", (PyCFunction)shapesize_method, METH_VARARGS,
+        "Return or set the pen’s attributes x/y-stretchfactors and/or outline."},
+    {"pendown", (PyCFunction)pendown_method, METH_NOARGS,
+        "Pull the pen down – drawing when moving."},
+    {"pd", (PyCFunction)pendown_method, METH_NOARGS,
+        "Pull the pen down – drawing when moving."},
+    {"down", (PyCFunction)pendown_method, METH_NOARGS,
+        "Pull the pen down – drawing when moving."},
+    {"penup", (PyCFunction)penup_method, METH_NOARGS,
+        "Pull the pen up – no drawing when moving."},
+    {"pu", (PyCFunction)penup_method, METH_NOARGS,
+        "Pull the pen up – no drawing when moving."},
+    {"up", (PyCFunction)penup_method, METH_NOARGS,
+        "Pull the pen up – no drawing when moving."},
+    {"isdown", (PyCFunction)isdown_method, METH_NOARGS,
+        "Return True if pen is down, False if it’s up."},
+    {"shape", (PyCFunction)shape_method, METH_VARARGS,
+        "Set turtle shape to shape with given name or, if name is not given, return name of current shape."},
+    {"pencolor", (PyCFunction)pencolor_method, METH_VARARGS,
+        "Return or set the pencolor."},
+    {"fillcolor", (PyCFunction)fillcolor_method, METH_VARARGS,
+        "Return or set the fillcolor."},
+    {"color", (PyCFunction)color_method, METH_VARARGS,
+        "Return or set pencolor and fillcolor."},
+    {"tracer", (PyCFunction)not_implemented_method,  METH_VARARGS| METH_KEYWORDS,
+        "Turn turtle animation on/off and set delay for update drawings (not implemented)."},
+    {"update", (PyCFunction)not_implemented_method,  METH_VARARGS| METH_KEYWORDS,
+        "Perform a TurtleScreen update. To be used when tracer is turned off (not implemented)."},
+    {"setundobuffer", (PyCFunction)not_implemented_method,  METH_VARARGS| METH_KEYWORDS,
+        "Set or disable undobuffer (not implemented)."},
+    {"speed", (PyCFunction)not_implemented_method,  METH_VARARGS| METH_KEYWORDS,
+        "Set the turtle’s speed to an integer value in the range 0..10. If no argument is given, return current speed (not implemented)."},
+    {"goto", (PyCFunction)goto_method,  METH_VARARGS,
+        "Move turtle to an absolute position. If the pen is down, draw line. Do not change the turtle’s orientation."},
+    {"setpos", (PyCFunction)goto_method,  METH_VARARGS,
+        "Move turtle to an absolute position. If the pen is down, draw line. Do not change the turtle’s orientation."},
+    {"setposition", (PyCFunction)goto_method,  METH_VARARGS,
+        "Move turtle to an absolute position. If the pen is down, draw line. Do not change the turtle’s orientation."},
+    {"forward", (PyCFunction)forward_method,  METH_VARARGS,
+        "Move the turtle forward by the specified distance, in the direction the turtle is headed."},
+    {"fd", (PyCFunction)forward_method,  METH_VARARGS,
+        "Move the turtle forward by the specified distance, in the direction the turtle is headed."},
+    {"backward", (PyCFunction)backward_method,  METH_VARARGS,
+        "Move the turtle backward by the specified distance, in the direction the turtle is headed."},
+    {"back", (PyCFunction)backward_method,  METH_VARARGS,
+        "Move the turtle backward by the specified distance, in the direction the turtle is headed."},
+    {"bk", (PyCFunction)backward_method,  METH_VARARGS,
+        "Move the turtle backward by the specified distance, in the direction the turtle is headed."},
+    {"stamp", (PyCFunction)stamp_method,  METH_VARARGS,
+        "Stamp a copy of the turtle shape onto the canvas at the current turtle position."},
+    {"left", (PyCFunction)left_method,  METH_VARARGS,
+        "Turn turtle left by angle units."},
+    {"lt", (PyCFunction)left_method,  METH_VARARGS,
+        "Turn turtle left by angle units."},
+    {"right", (PyCFunction)right_method,  METH_VARARGS,
+        "Turn turtle right by angle units."},
+    {"rt", (PyCFunction)right_method,  METH_VARARGS,
+        "Turn turtle right by angle units."},
+    {"setheading", (PyCFunction)setheading_method,  METH_VARARGS,
+        "Set the orientation of the turtle to to_angle."},
+    {"seth", (PyCFunction)setheading_method,  METH_VARARGS,
+        "Set the orientation of the turtle to to_angle."},
+    {"heading", (PyCFunction)heading_method,  METH_NOARGS,
+        "Return the turtle’s current heading."},
+    {"reset", (PyCFunction)reset_method,  METH_NOARGS,
+        "Delete the turtle’s drawings from the screen, re-center the turtle and set variables to the default values."},
+    {"width", (PyCFunction)width_method,  METH_VARARGS,
+        "Set the line thickness to width or return it."},
+    {"pensize", (PyCFunction)width_method,  METH_VARARGS,
+        "Set the line thickness to width or return it."},
+    {"begin_fill", (PyCFunction)begin_fill_method,  METH_NOARGS,
+        "To be called just before drawing a shape to be filled."},
+    {"end_fill", (PyCFunction)end_fill_method,  METH_NOARGS,
+        "Fill the shape drawn after the last call to begin_fill()."},
+    {"circle", (PyCFunction)circle_method,  METH_VARARGS | METH_KEYWORDS,
+        "Draw a circle with given radius."},
+    {"home", (PyCFunction)home_method,  METH_NOARGS,
+        "Move turtle to the origin – coordinates (0,0) – and set its heading to its start-orientation."},
+    {"dot", (PyCFunction)dot_method,  METH_VARARGS,
+        "Draw a circular dot with diameter size."},
+
+    {NULL, NULL, 0, NULL}        /* Sentinel */
+};
+
+
+
+PyTypeObject TurtleType =
+{
+    PyVarObject_HEAD_INIT(0, 0)
+    "qturtle.Type",     /* tp_name */
+    sizeof(TurtlePyObject),       /* tp_basicsize */
+    0,                    /* tp_itemsize */
+    (destructor)turtle_dealloc,  /* tp_dealloc */
+    0,                    /* tp_print */
+    0,                    /* tp_getattr */
+    0,                    /* tp_setattr */
+    0,                    /* tp_reserved */
+    0,                    /* tp_repr */
+    0,                    /* tp_as_number */
+    0,                    /* tp_as_sequence */
+    0,                    /* tp_as_mapping */
+    0,                    /* tp_hash  */
+    0,                    /* tp_call */
+    0,                    /* tp_str */
+    0,                    /* tp_getattro */
+    0,                    /* tp_setattro */
+    0,                    /* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,   /* tp_flags */
+    "Turtle object",      /* tp_doc */
+    0,                    /* tp_traverse */
+    0,                    /* tp_clear */
+    0,                    /* tp_richcompare */
+    0,                    /* tp_weaklistoffset */
+    0,                    /* tp_iter */
+    0,                    /* tp_iternext */
+    Turtle_methods,       /* tp_methods */
+    0,                    /* tp_members */
+    0,                    /* tp_getset */
+    0,                    /* tp_base */
+    0,                    /* tp_dict */
+    0,                    /* tp_descr_get */
+    0,                    /* tp_descr_set */
+    0,                    /* tp_dictoffset */
+    0,                    /* tp_init */
+    0,                    /* tp_alloc */
+    turtle_new,                    /* tp_new */
+};
+
+void registerTurtleType(PyObject* module)
+{
+    PyType_Ready(&TurtleType);
+    Py_INCREF(&TurtleType);
+
+    PyModule_AddObject(module, "Turtle", (PyObject *)&TurtleType);
 }
 
 

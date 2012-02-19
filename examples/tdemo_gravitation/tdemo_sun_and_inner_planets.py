@@ -14,7 +14,7 @@ inner planets orbiting around the sun.
 Demonstrates the use of (user defined)
 worldcoordinates.
 """
-from turtle import Screen, Turtle, Shape, Vec2D
+from qturtle import Screen, Turtle, Shape, Vec2D
 
 AE = 1.5e11
 # masses

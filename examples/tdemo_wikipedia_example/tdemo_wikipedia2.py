@@ -16,7 +16,7 @@ in n_eck. They change the colors or the
 circle segments.
 
 """
-from turtle import *
+from qturtle import *
 from time import clock
 
 def n_eck(ne,sz):

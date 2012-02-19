@@ -21,7 +21,7 @@ ncolor,
           To exit press STOP button
  -------------------------------------------
 """
-from turtle import *
+from qturtle import *
 import sys
 sys.setrecursionlimit(20000)
 

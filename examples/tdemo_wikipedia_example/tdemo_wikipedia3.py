@@ -15,7 +15,7 @@ parallel.
 Version without cloning using the turtles()
 method of TurtleScreen
 """
-from turtle import Screen, Turtle, mainloop
+from qturtle import Screen, Turtle, mainloop
 from time import clock
 
 def create_turtles(ne):

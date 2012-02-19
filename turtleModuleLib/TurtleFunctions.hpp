@@ -52,7 +52,7 @@ PyObject* circle_global(PyObject *self, PyObject *args, PyObject* keywords);
 PyObject* home_global(PyObject *self, PyObject *args);
 PyObject* dot_global(PyObject *self, PyObject *args);
 
-
+void registerTurtleType(PyObject* module);
 
 } // namespace TurtleModule
 

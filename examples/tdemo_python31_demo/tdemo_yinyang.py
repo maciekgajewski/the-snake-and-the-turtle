@@ -11,7 +11,7 @@ command.
 
 """
 
-from turtle import *
+from qturtle import *
 
 def yin(radius, color1, color2):
     width(3)

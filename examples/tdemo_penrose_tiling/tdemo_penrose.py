@@ -15,7 +15,7 @@ For more information see:
  http://en.wikipedia.org/wiki/Penrose_tiling
  -------------------------------------------
 """
-from turtle import *
+from qturtle import *
 from math import cos, pi
 from time import clock, sleep
 

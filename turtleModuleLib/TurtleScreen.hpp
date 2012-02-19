@@ -54,7 +54,8 @@ public:
     double neutralRotationRadians() const;
     double rotationMultiplier() const;
 
-    Turtle* turtle() const;
+    Turtle* turtle();
+    Turtle* createTurtle();
 
     void resetHard(); // restt between executions
 
@@ -74,6 +75,9 @@ public Q_SLOTS:
     virtual void bye();
     virtual void exitonclick();
 
+private Q_SLOTS:
+
+    void createTurtleInternal();
 
 private:
 

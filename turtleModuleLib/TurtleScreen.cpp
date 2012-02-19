@@ -25,6 +25,7 @@
 #include <QGraphicsScene>
 #include <QDebug>
 
+#include <algorithm>
 
 namespace TurtleModule {
 
@@ -70,14 +71,33 @@ double TurtleScreen::rotationMultiplier() const
         return -1.0;
 }
 
-Turtle *TurtleScreen::turtle() const
+Turtle* TurtleScreen::turtle()
 {
+    if (_turtles.empty())
+    {
+        createTurtle();
+    }
     return _turtles[0];
+}
+
+Turtle* TurtleScreen::createTurtle()
+{
+    QMutexLocker l(&_mutex);
+
+    QMetaObject::invokeMethod(this, "createTurtleInternal", Qt::BlockingQueuedConnection);
+    return  _turtles.back();
+}
+
+void TurtleScreen::createTurtleInternal()
+{
+    _turtles.append(new Turtle(this));
+    _scene->addItem(_turtles.back());
 }
 
 void TurtleScreen::resetHard()
 {
     _bgcolor = Qt::white;
+    _mode = (Mode)-1; // to force reset in the next statement
     mode(MODE_STANDARD);
 }
 
@@ -143,14 +163,12 @@ void TurtleScreen::reset()
 
     if (_scene)
         delete _scene; // this deletes all turtles
+    //std::for_each(_turtles.begin(), _turtles.end(), [](Turtle* t) { delete t; });
     _turtles.clear();
 
     _scene = new QGraphicsScene(this);
     setScene(_scene);
     _scene->setBackgroundBrush(_bgcolor);
-
-    _turtles.append(new Turtle(this));
-    _scene->addItem(_turtles[0]);
 
     QApplication::processEvents();
 }

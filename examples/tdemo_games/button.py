@@ -2,7 +2,7 @@
 # 8. 3. 2007
 # Gregor Lingl
 
-from turtle import Turtle
+from qturtle import Turtle
 
 class Button(Turtle):
     def __init__(self, picfile, action):

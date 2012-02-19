@@ -22,7 +22,7 @@ cloning turtles. The animation is
 controlled through update().
 """
 
-from turtle import *
+from qturtle import *
 
 def stop():
     global running

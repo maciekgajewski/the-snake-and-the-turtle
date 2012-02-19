@@ -18,7 +18,7 @@ in lines 61, 78 and 102.
 """
 
 import math
-from turtle import Turtle, Screen
+from qturtle import Turtle, Screen
 from time import clock
 
 # wrapper for any additional drawing routines

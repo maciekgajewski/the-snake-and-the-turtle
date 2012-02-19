@@ -11,7 +11,7 @@ For more information see:
  http://en.wikipedia.org/wiki/Penrose_tiling
 """
 
-from turtle import *
+from qturtle import *
 from time import clock, sleep
 
 f = (5**0.5-1)/2.0   # (sqrt(5)-1)/2 -- goldener Schnitt

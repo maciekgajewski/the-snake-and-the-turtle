@@ -20,7 +20,7 @@ has to be recalculated.
 For another application of this technique
 see: tdemo_sun_earth_moon.py .
 """
-from turtle import Screen, Turtle, Shape, mainloop, Vec2D
+from qturtle import Screen, Turtle, Shape, mainloop, Vec2D
 from time import sleep
 
 mS = 2.e30

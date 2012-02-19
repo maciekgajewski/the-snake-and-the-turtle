@@ -3,7 +3,7 @@
 # Datum: 17. 9. 2006
 # moorhuhn - Spiel
 
-from turtle import Screen, Turtle # title, mainloop
+from qturtle import Screen, Turtle # title, mainloop
 import random, time
 try:
     import winsound

@@ -13,7 +13,7 @@ are the upmost, so *they* remain visible
 during the animation.
 """
 
-from turtle import Turtle, Screen, Vec2D
+from qturtle import Turtle, Screen, Vec2D
 import math
 
 def dsin(angle):

@@ -17,7 +17,7 @@ trees in parallel - sort of 'micro-threads'.
 
 See: tdemo_2rtrees_generators.py
 """
-from turtle import Turtle, Screen
+from qturtle import Turtle, Screen
 from time import clock
 
 screen = Screen()

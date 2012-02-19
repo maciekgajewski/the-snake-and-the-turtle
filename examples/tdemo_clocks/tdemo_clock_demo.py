@@ -18,7 +18,7 @@ Timer events are registered.
    ===============================
 """
 
-from turtle import *
+from qturtle import *
 
 def main():
     reset()

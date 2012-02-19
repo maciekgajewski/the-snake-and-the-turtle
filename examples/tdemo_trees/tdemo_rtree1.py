@@ -10,7 +10,7 @@ which use a depth-first-algorithm.
 Uses turtle-cloning: At each branching point the
 current turtle is cloned. 
 """
-from turtle import Turtle, Screen
+from qturtle import Turtle, Screen
 from time import clock
 
 screen = Screen()

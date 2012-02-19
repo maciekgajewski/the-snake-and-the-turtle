@@ -12,7 +12,7 @@ We can remove it, if you don't like it.
       Without using reset() ;-)
  ---------------------------------------
 """
-from turtle import *
+from qturtle import *
 import time
 
 def main():

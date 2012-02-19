@@ -21,7 +21,7 @@ stretched to rectangles by shapesize()
        To exit press STOP button
  ---------------------------------------
 """
-from turtle import *
+from qturtle import *
 
 N = 5
 

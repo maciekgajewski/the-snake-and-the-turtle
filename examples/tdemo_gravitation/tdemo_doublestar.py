@@ -11,7 +11,7 @@ Example: heavy bodies of equal mass, moving
 around the center of mass of the system.
 
 """
-from turtle import Turtle, Screen, Vec2D 
+from qturtle import Turtle, Screen, Vec2D 
 from time import sleep
 
 G = 8

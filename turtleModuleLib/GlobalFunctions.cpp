@@ -165,6 +165,8 @@ PyObject* creteModule()
     if (m == NULL)
         return NULL;
 
+    registerTurtleType(m);
+
     return m;
 }
 

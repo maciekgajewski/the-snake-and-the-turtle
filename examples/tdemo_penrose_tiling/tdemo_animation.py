@@ -10,7 +10,7 @@ For more information see:
  http://en.wikipedia.org/wiki/Penrose_tiling
 """
 
-from turtle import *
+from qturtle import *
 import math
 import time
 
